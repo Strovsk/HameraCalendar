@@ -7,6 +7,7 @@ class HemeraCalendarEngine {
             selectionType: 'range',
             markCurrentDay: true,
             pos: { x: 0, y: 0 },
+            closeAfterSelect: true,
             ...options,
         };
 
@@ -179,9 +180,8 @@ class HemeraCalendarEngine {
     }
 
     selectDate(year, month, date) {
-        let dateBuffer = undefined;
         try {
-            dateBuffer = new Date(year, month, date);
+            new Date(year, month, date);
         } catch (error) { return false; }
 
         if (this.isDateInSelection(year, month, date)) return false;
@@ -276,5 +276,12 @@ class HemeraCalendarEngine {
             (dateA, dateB) => dateA - dateB
         );
         return toCompareDateObj > sortedPeriod[0] && toCompareDateObj < sortedPeriod[1];
+    }
+
+    mustClose() {
+        return (
+            (this.options.selectionType === '1' && this.selections.length === 1) ||
+            (this.options.selectionType === 'range' && this.selections.length === 2)
+        ) && this.options.closeAfterSelect;
     }
 }

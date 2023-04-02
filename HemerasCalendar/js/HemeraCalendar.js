@@ -13,8 +13,6 @@ class Calendar {
 
         this.calendarEngine = new HemeraCalendarEngine(options);
 
-        this.dateRangeSelection = [];
-
         this.containerElm;
         this.containerYearMonthElm;
         this.buttonsContainerYearMonthElm;
@@ -72,6 +70,7 @@ class Calendar {
 
     loadElementStyles() {
         this.containerElm.classList.add('Calendar');
+        if (this.options.static) this.show();
 
         this.containerYearMonthElm.classList.add('CalendarYearMonthController');
         this.buttonsContainerYearMonthElm.classList.add('CalendarYearMonthController-buttonContainer');
@@ -119,34 +118,6 @@ class Calendar {
         this.insertDatesInScreen();
     }
 
-    selectDate(index, month, year, element) {
-        if (this.dateRangeSelection.length === 0) {
-            this.dateRangeSelection.push({ index, month, year });
-            element.classList.add('--selected');
-            return;
-        }
-
-        const isSelected = this.dateRangeSelection.filter((dateSelection) => (
-            dateSelection.index === index && dateSelection.month === month && dateSelection.year === year
-        ));
-
-        if (isSelected.length > 0) {
-            element.classList.remove('--selected');
-            const toRemoveIndex = this.dateRangeSelection.indexOf(isSelected[0]);
-            this.dateRangeSelection.splice(toRemoveIndex, 1);
-            this.resetRange();
-            return;
-        }
-
-        if (this.dateRangeSelection.length === 1 && this.options.isRange) {
-            this.dateRangeSelection.push({ index, month, year });
-            element.classList.add('--selected');
-            const [firstIndex, secondIndex] = this.dateRangeSelection.flatMap(e => e.index);
-            this.selectRange(firstIndex, secondIndex);
-            return;
-        }
-    }
-
     insertDatesInScreen() {
         this.containerCalendarDatesElm.innerHTML = '';
         const dateClickEvent = (event) => {
@@ -157,6 +128,8 @@ class Calendar {
             const isSelected = this.calendarEngine.toggleDateSelection(year, month, date);
             if (isSelected) event.target.classList.add('--selected');
             else event.target.classList.remove('--selected');
+
+            if (this.calendarEngine.mustClose()) setTimeout(() => this.hide(), 300);
         };
 
         const dateMouseHoverEvent = (event) => {
@@ -222,5 +195,28 @@ class Calendar {
         ).forEach((dateElm) => {
             dateElm.classList.remove('--sub-selected');
         });
+    }
+
+    show() {
+        console.log('show element');
+        this.containerElm.removeAttribute('close');
+        this.containerElm.setAttribute('open', '');
+    }
+
+    hide() {
+        console.log('hide element');
+        this.containerElm.removeAttribute('open');
+        this.containerElm.setAttribute('close', '');
+        this.containerElm.addEventListener('animationend', () => {
+            this.containerElm.removeAttribute('close');
+            console.log('animação acabou');
+        }, { once: true});
+        this.insertDatesInScreen();
+    }
+
+    toggle() {
+        console.log('toggle element', this.containerElm.hasAttribute('open'));
+        if (this.containerElm.hasAttribute('open')) this.hide();
+        else this.show();
     }
 }

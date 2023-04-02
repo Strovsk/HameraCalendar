@@ -9,6 +9,21 @@
     display: grid;
     grid-template-rows: 0.3fr 0.1fr 1fr;
     position: absolute;
+    display: none;
+}
+
+.Calendar[open] {
+    animation: showCalendar .2s ease;
+    display: grid;
+    transform: scale(1);
+    opacity: 1;
+}
+
+.Calendar[close] {
+    animation: hideCalendar .2s ease;
+    display: grid;
+    transform: scale(1);
+    opacity: 1;
 }
 
 .CalendarDays {
@@ -175,4 +190,26 @@
     right: var(--button-bar-left);
     top: var(--button-bar-top);
     transform: rotate(-45deg);
+}
+
+@keyframes showCalendar {
+    from {
+        transform: scale(.8);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes hideCalendar {
+    from {
+        transform: scale(1);
+        opacity: 1;
+    }
+    to {
+        transform: scale(.8);
+        opacity: 0;
+    }
 }
