@@ -113,6 +113,14 @@ class HemeraCalendarEngine {
         };
     }
 
+    mustResetSelection() {
+        return this.options.selectionType === '1' && this.selections.length > 0;
+    }
+
+    resetSelections() {
+        this.selections = [];
+    }
+
     isToday(year, month, date) {
         return this.today.getFullYear() === year && this.today.getMonth() === month && this.today.getDate() === date;
     }
@@ -197,8 +205,9 @@ class HemeraCalendarEngine {
                 return true;
             },
             '1': () => {
-                if (this.selections.length !== 0) return false;
+                if (this.selections.length > 0) this.resetSelections();
                 this.selections.push({ year, month, date });
+                console.log(this.selections);
                 return true;
             }
         })[this.options.selectionType]();

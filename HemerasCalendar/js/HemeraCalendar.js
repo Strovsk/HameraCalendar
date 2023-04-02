@@ -125,6 +125,7 @@ class Calendar {
             const year = parseInt(event.target.getAttribute('year'), 10);
             const date = parseInt(event.target.innerText, 10);
 
+            if (this.calendarEngine.mustResetSelection()) this.resetSelection();
             const isSelected = this.calendarEngine.toggleDateSelection(year, month, date);
             if (isSelected) event.target.classList.add('--selected');
             else event.target.classList.remove('--selected');
@@ -194,6 +195,16 @@ class Calendar {
             this.containerCalendarDatesElm.children
         ).forEach((dateElm) => {
             dateElm.classList.remove('--sub-selected');
+        });
+    }
+
+    resetSelection() {
+        console.log('Iniciando resetar seleção');
+        Array.from(
+            this.containerCalendarDatesElm.children
+        ).forEach((dateElm) => {
+            if (dateElm.classList.contains('--selected'))
+                dateElm.classList.remove('--selected');
         });
     }
 
