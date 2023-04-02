@@ -4,8 +4,7 @@ class Calendar {
             language: 'pt-br',
             static: false,
             container: undefined,
-            isRange: true,
-            pos: { x: 0, y: 0 },
+            pos: undefined, // undefined | { x: number, y: number }
             selectionType: 'range',
             markCurrenDay: true,
             ...options,
@@ -38,9 +37,29 @@ class Calendar {
         this.containerCalendarDatesElm = document.createElement('div');
     }
 
+    _defineCalendarDefaultPosition(x = 50, y = 50) {
+        if (this.options.container) {
+            const posRefElm = document.querySelector(this.options.container);
+            if (posRefElm) {
+                const refStyles = posRefElm.getBoundingClientRect();
+                console.log('top', refStyles);
+                const gapLeft = 0;
+                const gapTop = 20;
+                return {
+                    y: Math.round(refStyles.y + refStyles.height + gapTop),
+                    x: Math.round(refStyles.x + (refStyles.width / 2) + gapLeft),
+                };
+            }
+        } else if (this.options.pos) {
+            return { x: this.options.pos.x, y: this.options.pos.y };
+        }
+        return { x, y };
+    }
+
     createElementStructure() {
-        this.containerElm.style.top = this.options.pos.y + 'px';
-        this.containerElm.style.left = this.options.pos.x + 'px';
+        const containerPos = this._defineCalendarDefaultPosition();
+        this.containerElm.style.top = containerPos.y + 'px';
+        this.containerElm.style.left = containerPos.x + 'px';
 
         this.containerElm.appendChild(this.containerYearMonthElm);
         this.containerElm.appendChild(this.containerCalendarDays);
