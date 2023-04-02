@@ -269,9 +269,12 @@ class HemeraCalendarEngine {
 
     isDateSubSelectingRangeMode(toCompareDate, limitDate) {
         if (!this.isSubSelectingRangeMode()) return false;
-        const startSelectedDate = new Date(this.selections[0].year, this.selections[0].month, this.selections[0].date);
+        const selectedDate = new Date(this.selections[0].year, this.selections[0].month, this.selections[0].date);
         const toCompareDateObj = new Date(toCompareDate.year, toCompareDate.month, toCompareDate.date);
         const limitDateObj = new Date(limitDate.year, limitDate.month, limitDate.date);
-        return toCompareDateObj > startSelectedDate && toCompareDateObj < limitDateObj;
+        const sortedPeriod = [limitDateObj, selectedDate].sort(
+            (dateA, dateB) => dateA - dateB
+        );
+        return toCompareDateObj > sortedPeriod[0] && toCompareDateObj < sortedPeriod[1];
     }
 }

@@ -91,9 +91,7 @@ class Calendar {
 
     loadEvents() {
         const resetDaySelection = () => {
-            console.log(this.dateRangeSelection);
-            if (this.dateRangeSelection.length < 2)
-                this.resetRange();
+            if (!this.calendarEngine.isRangeDefined()) this.resetRange();
         };
 
         this.containerCalendarDatesElm.addEventListener('mouseleave', resetDaySelection);
