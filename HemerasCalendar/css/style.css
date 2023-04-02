@@ -90,10 +90,6 @@
     color: white;
 }
 
-.calendarDate:hover {
-    background-color: rgba(50, 50, 50, .3);
-}
-
 .CalendarMonthYear {
     font-size: 1.3em;
     font-weight: 600;
@@ -102,10 +98,6 @@
     /*   border: 2px dotted green; */
     background-color: transparent;
     cursor: pointer;
-}
-
-.CalendarMonthYear:hover {
-    background-color: rgba(40, 40, 40, 0.3);
 }
 
 .CalendarYearMonthController {
@@ -127,7 +119,7 @@
     --button-bar-height: 30%;
     --button-bar-left: 35%;
     --button-bar-top: 37%;
-    
+
     border-radius: 50%;
     border: none;
     position: relative;
@@ -138,10 +130,6 @@
     cursor: pointer;
     background-color: transparent;
     /*   background: cyan; */
-}
-
-.CalendarYearMonthController-button:hover {
-    background-color: rgba(40, 40, 40, 0.3);
 }
 
 .CalendarYearMonthController-button.--next::after {
@@ -211,5 +199,34 @@
     to {
         transform: scale(.8);
         opacity: 0;
+    }
+}
+
+@media (max-width: 600px) {
+    .Calendar {
+        width: 80vw;
+        height: 70vh;
+        margin: auto;
+        left: 0;
+        top: 0;
+        position: fixed;
+    }
+
+    .Calendar::backdrop {
+        /* background: rgb(0, 0, 0, 0.5); */
+        background: red;
+        /* opacity: 0; */
+    }
+}
+
+@media (hover) {
+    .calendarDate:hover {
+        background-color: rgba(50, 50, 50, .3);
+    }
+    .CalendarYearMonthController-button:hover {
+        background-color: rgba(40, 40, 40, 0.3);
+    }
+    .CalendarMonthYear:hover {
+        background-color: rgba(40, 40, 40, 0.3);
     }
 }

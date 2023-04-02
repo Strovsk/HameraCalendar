@@ -1,4 +1,4 @@
-class Calendar {
+class HemeraCalendar {
     constructor(options = {}) {
         this.options = {
             language: 'pt-br',
@@ -147,7 +147,10 @@ class Calendar {
             if (this.calendarEngine.mustResetSelection()) this.resetSelection();
             const isSelected = this.calendarEngine.toggleDateSelection(year, month, date);
             if (isSelected) event.target.classList.add('--selected');
-            else event.target.classList.remove('--selected');
+            else {
+                event.target.classList.remove('--selected');
+                if (this.isMobileDevice()) this.resetRange();
+            };
 
             if (this.calendarEngine.mustClose()) setTimeout(() => this.hide(), 300);
         };
@@ -208,7 +211,7 @@ class Calendar {
     };
     
     resetRange() {
-        console.log('Executando reset');
+        console.log('Executando reset de range');
         if (this.calendarEngine.isRangeDefined()) return;
         Array.from(
             this.containerCalendarDatesElm.children
@@ -225,6 +228,30 @@ class Calendar {
             if (dateElm.classList.contains('--selected'))
                 dateElm.classList.remove('--selected');
         });
+    }
+
+    isMobileDevice() {
+        const isMobile = {
+            Android: function() {
+                return navigator.userAgent.match(/Android/i);
+            },
+            BlackBerry: function() {
+                return navigator.userAgent.match(/BlackBerry/i);
+            },
+            iOS: function() {
+                return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+            },
+            Opera: function() {
+                return navigator.userAgent.match(/Opera Mini/i);
+            },
+            Windows: function() {
+                return navigator.userAgent.match(/IEMobile/i) || navigator.userAgent.match(/WPDesktop/i);
+            },
+        };
+
+        return (
+            isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows()
+        );
     }
 
     show() {
