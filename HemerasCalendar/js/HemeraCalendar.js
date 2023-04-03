@@ -21,6 +21,8 @@ class HemeraCalendar {
         this.containerCalendarDays;
         this.containerCalendarDatesElm;
 
+        this.containerCalendarMonthYearElm;
+
         this.loadComponent();
     }
 
@@ -35,6 +37,8 @@ class HemeraCalendar {
 
         this.containerCalendarDays = document.createElement('div');
         this.containerCalendarDatesElm = document.createElement('div');
+
+        this.containerCalendarMonthYearElm = document.createElement('div');
     }
 
     _defineCalendarDefaultPosition(x = 50, y = 50) {
@@ -61,9 +65,14 @@ class HemeraCalendar {
         this.containerElm.style.top = containerPos.y + 'px';
         this.containerElm.style.left = containerPos.x + 'px';
 
+        this.containerCalendarDatesElm.setAttribute('open', '');
+        this.containerCalendarDays.setAttribute('open', '');
+        // this.containerCalendarMonthYearElm.setAttribute('close', '');
+
         this.containerElm.appendChild(this.containerYearMonthElm);
         this.containerElm.appendChild(this.containerCalendarDays);
         this.containerElm.appendChild(this.containerCalendarDatesElm);
+        this.containerElm.appendChild(this.containerCalendarMonthYearElm);
 
         this.containerYearMonthElm.appendChild(this.yearMonthElm);
         this.containerYearMonthElm.appendChild(
@@ -105,6 +114,8 @@ class HemeraCalendar {
 
         this.containerCalendarDays.classList.add('CalendarDays');
         this.containerCalendarDatesElm.classList.add('CalendarDates');
+
+        this.containerCalendarMonthYearElm.classList.add('CalendarMonthSelection');
     }
 
     loadEvents() {
@@ -114,14 +125,30 @@ class HemeraCalendar {
 
         this.containerCalendarDatesElm.addEventListener('mouseleave', resetDaySelection);
         this.containerElm.addEventListener('mouseleave', resetDaySelection);
+
+        this.yearMonthElm.addEventListener('click', () => {
+            this.toggleDatesArea();
+            console.log('clicado');
+        });
     }
 
     loadComponent() {
         this.createElements();
         this.createElementStructure();
         this.loadElementStyles();
+    
         this.insertDatesInScreen();
+        this.insertMonthsInScreen();
         this.loadEvents();
+    }
+
+    setYearMonth(text) {
+        // REFACTOR subsitute all this.yearmonthElm.innerText for this function
+        this.yearMonthElm.innerText = text;
+    }
+
+    setMonthYearToCurrent() {
+        this.yearMonthElm.innerText = `${this.calendarEngine.getCurrentMonthName().expanded} ${this.calendarEngine.getCurrentYear()}`;
     }
 
     monthController(monthQtd = 1, option = 'add') {
@@ -135,6 +162,14 @@ class HemeraCalendar {
 
         this.yearMonthElm.innerText = `${monthName} ${year}`;
         this.insertDatesInScreen();
+    }
+
+    insertMonthsInScreen() {
+        this.calendarEngine.monthsOptions[this.options.language].forEach((monthName) => {
+            const monthElm = document.createElement('div');
+            monthElm.innerText = monthName.short;
+            this.containerCalendarMonthYearElm.appendChild(monthElm);
+        });
     }
 
     insertDatesInScreen() {
@@ -275,5 +310,61 @@ class HemeraCalendar {
         console.log('toggle element', this.containerElm.hasAttribute('open'));
         if (this.containerElm.hasAttribute('open')) this.hide();
         else this.show();
+    }
+
+    hideDatesArea() {
+        const onAnimationEnd = (event) => {
+            console.log('animação de fechar o calendario acabou');
+            event.target.removeAttribute('close');
+        };
+
+        this.containerCalendarDatesElm.setAttribute('close', '');
+        this.containerCalendarDatesElm.removeAttribute('open');
+        this.containerCalendarDatesElm.addEventListener('animationend', (event) => {
+            onAnimationEnd(event);
+            this.showMonthsArea();
+        }, { once: true});
+        
+        this.containerCalendarDays.setAttribute('close', '');
+        this.containerCalendarDays.removeAttribute('open');
+        this.containerCalendarDays.addEventListener('animationend', onAnimationEnd, { once: true});
+    }
+
+    showDatesArea() {
+        this.setMonthYearToCurrent();
+        this.containerCalendarDatesElm.removeAttribute('close');
+        this.containerCalendarDatesElm.setAttribute('open', '');
+
+        this.containerCalendarDays.removeAttribute('close');
+        this.containerCalendarDays.setAttribute('open', '');     
+    }
+
+    toggleDatesArea() {
+        if (this.containerCalendarDatesElm.hasAttribute('open')) {
+            this.hideDatesArea();
+            console.log('fechando calendário');
+        }
+        else {
+            console.log('abrindo calendário');
+            this.hideMonthsArea();
+        }
+    }
+
+    showMonthsArea() {
+        this.setYearMonth(this.calendarEngine.currentMonthYear.year);
+        this.containerCalendarMonthYearElm.setAttribute('open', '');
+        this.containerCalendarMonthYearElm.removeAttribute('close');
+    }
+
+    hideMonthsArea() {
+        const onAnimationEnd = (event) => {
+            console.log('animação de abrir o calendario acabou');
+            event.target.removeAttribute('close');
+            this.showDatesArea();
+        };
+
+        this.containerCalendarMonthYearElm.setAttribute('close', '');
+        this.containerCalendarMonthYearElm.removeAttribute('open', '');
+        this.containerCalendarMonthYearElm.addEventListener('animationend', onAnimationEnd, { once: true});
     }
 }

@@ -28,7 +28,7 @@
 
 .CalendarDays {
     width: 100%;
-    display: flex;
+    display: none;
     flex-flow: nowrap row;
     justify-content: space-around;
     /*   border: 2px dotted blue; */
@@ -55,6 +55,30 @@
     grid-template-rows: repeat(5, 1fr);
     align-items: center;
     justify-items: center;
+    display: none;
+}
+
+.CalendarDays[open] {
+    width: 100%;
+    display: flex;
+    flex-flow: nowrap row;
+    justify-content: space-around;
+    animation: showCalendar .2s ease;
+}
+
+.CalendarDates[open] {
+    display: grid;
+    animation: showCalendar .2s ease;
+}
+
+.CalendarDates[close] {
+    display: grid;
+    animation: hideCalendar 0.2s ease;
+}
+
+.CalendarDays[close] {
+    display: flex;
+    animation: hideCalendar 0.2s ease;
 }
 
 .calendarDate {
@@ -69,6 +93,7 @@
     width: 36px;
     height: 36px;
     transition: .1s linear all;
+    user-select: none;
 }
 
 .calendarDate.--today {
@@ -180,6 +205,39 @@
     transform: rotate(-45deg);
 }
 
+.CalendarMonthSelection {
+    display: none;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    place-items: center;
+    width: 90%;
+    height: auto;
+    margin: auto;
+    grid-row: span 2;
+}
+
+.CalendarMonthSelection div {
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    transition: .2s ease background;
+    display: grid;
+    place-items: center;
+    font-weight: 400;
+    cursor: default;
+    font-size: 1.3em;
+}
+
+.CalendarMonthSelection[open] {
+    display: grid;
+    animation: showCalendar 0.2s ease;
+}
+
+.CalendarMonthSelection[close] {
+    display: grid;
+    animation: hideCalendar 0.2s ease;
+}
+
 @keyframes showCalendar {
     from {
         transform: scale(.8);
@@ -228,5 +286,9 @@
     }
     .CalendarMonthYear:hover {
         background-color: rgba(40, 40, 40, 0.3);
+    }
+    .CalendarMonthSelection div:hover {
+        background-color: rgba(40, 40, 40, 0.3);
+        font-weight: 500;
     }
 }
