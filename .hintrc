@@ -11,6 +11,14 @@
       {
         "button-name": "off"
       }
+    ],
+    "compat-api/css": [
+      "default",
+      {
+        "ignore": [
+          "user-select"
+        ]
+      }
     ]
   }
 }
