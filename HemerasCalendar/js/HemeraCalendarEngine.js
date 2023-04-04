@@ -55,7 +55,7 @@ class HemeraCalendarEngine {
     }
 
     setMonth(month) {
-        if (month <= 0 || month >= 12) return;
+        if (month <= 0 && month >= 12) return;
         this.currentMonthYear.month = month;
     }
 

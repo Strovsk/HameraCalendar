@@ -10,6 +10,8 @@ class HemeraCalendar {
             ...options,
         };
 
+        this.isDatesView = true;
+
         this.calendarEngine = new HemeraCalendarEngine(options);
 
         this.containerElm;
@@ -89,10 +91,14 @@ class HemeraCalendar {
         this.yearMonthElm.innerText = `${this.calendarEngine.getCurrentMonthName().expanded} ${this.calendarEngine.getCurrentYear()}`;
 
         this.nextYearMonthElm.addEventListener('click', () => {
-            this.monthController(1, 'add');
+            if (this.isDatesView)
+                this.monthController(1, 'add');
+            else this.yearController(1, 'add');
         });
         this.prevYearMonthElm.addEventListener('click', () => {
-            this.monthController(1, 'remove');
+            if (this.isDatesView)
+                this.monthController(1, 'remove');
+            else this.yearController(1, 'remove');
         });
     }
 
@@ -164,9 +170,26 @@ class HemeraCalendar {
         this.insertDatesInScreen();
     }
 
+    yearController(yearQtd = 1, option = 'add') {
+        ({
+            'add': () => this.calendarEngine.addYear(yearQtd),
+            'remove': () => this.calendarEngine.removeYear(yearQtd),
+        })[option]();
+
+        const year = this.calendarEngine.getCurrentYear()
+
+        this.yearMonthElm.innerText = `${year}`;
+        this.insertDatesInScreen();
+    }
+
     insertMonthsInScreen() {
-        this.calendarEngine.monthsOptions[this.options.language].forEach((monthName) => {
+        this.calendarEngine.monthsOptions[this.options.language].forEach((monthName, index) => {
             const monthElm = document.createElement('div');
+            monthElm.addEventListener('click', () => {
+                this.calendarEngine.setMonth(index);
+                this.insertDatesInScreen();
+                this.toggleDatesArea();
+            });
             monthElm.innerText = monthName.short;
             this.containerCalendarMonthYearElm.appendChild(monthElm);
         });
@@ -318,6 +341,8 @@ class HemeraCalendar {
             event.target.removeAttribute('close');
         };
 
+        this.isDatesView = false;
+
         this.containerCalendarDatesElm.setAttribute('close', '');
         this.containerCalendarDatesElm.removeAttribute('open');
         this.containerCalendarDatesElm.addEventListener('animationend', (event) => {
@@ -332,6 +357,9 @@ class HemeraCalendar {
 
     showDatesArea() {
         this.setMonthYearToCurrent();
+
+        this.isDatesView = true;
+
         this.containerCalendarDatesElm.removeAttribute('close');
         this.containerCalendarDatesElm.setAttribute('open', '');
 
