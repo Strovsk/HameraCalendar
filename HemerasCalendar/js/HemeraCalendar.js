@@ -7,6 +7,10 @@ class HemeraCalendar {
             pos: undefined, // undefined | { x: number, y: number }
             selectionType: 'range',
             markCurrenDay: true,
+            onSelect: (selections) => {
+                console.log('date selected', selections);
+            },
+            onConfirm: () => {},
             ...options,
         };
 
@@ -221,7 +225,16 @@ class HemeraCalendar {
 
             if (this.calendarEngine.mustResetSelection()) this.resetSelection();
             const isSelected = this.calendarEngine.toggleDateSelection(year, month, date);
-            if (isSelected) event.target.classList.add('--selected');
+            if (isSelected) {
+                event.target.classList.add('--selected');
+                this.options.onSelect({
+                    year, month, date,
+                    isToday: event.target.classList.contains('--today'),
+                    isAnotherMonth: event.target.classList.contains('--anotherMonth'),
+                    dateObj: new Date(year, month, date),
+                    target: event.target,
+                });
+            }
             else {
                 event.target.classList.remove('--selected');
                 if (this.isMobileDevice()) this.resetRange();
