@@ -59,7 +59,7 @@
 }
 
 .CalendarDays[open] {
-    width: 100%;
+    width: 90%;
     display: flex;
     flex-flow: nowrap row;
     justify-content: space-around;
@@ -238,6 +238,41 @@
     animation: hideCalendar 0.2s ease;
 }
 
+.CalendarActionContainer {
+    width: 90%;
+    margin: auto;
+    margin-block: 15px;
+    display: flex;
+    justify-content: flex-end;
+    column-gap: 15px;
+    display: none;
+}
+
+.CalendarActionContainer[open] {
+    width: 90%;
+    display: flex;
+    flex-flow: nowrap row;
+    justify-content: flex-end;
+    animation: showCalendar .2s ease;
+}
+
+.CalendarActionContainer[close] {
+    display: grid;
+    animation: hideCalendar 0.2s ease;
+}
+
+.CalendarActionContainer button {
+    color:rgba(122, 81, 151, 1);
+    font-weight: 900;
+    font-size: 15px;
+    border: none;
+    background-color: transparent;
+    padding: 7px 10px;
+    cursor: pointer;
+    transition: .1s linear all;
+    border-radius: 5px;
+}
+
 @keyframes showCalendar {
     from {
         transform: scale(.8);
@@ -290,5 +325,8 @@
     .CalendarMonthSelection div:hover {
         background-color: rgba(40, 40, 40, 0.3);
         font-weight: 500;
+    }
+    .CalendarActionContainer button:hover {
+        background-color: rgba(40, 40, 40, 0.1);
     }
 }

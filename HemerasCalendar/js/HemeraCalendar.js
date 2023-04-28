@@ -25,6 +25,10 @@ class HemeraCalendar {
 
         this.containerCalendarMonthYearElm;
 
+        this.containerCalendarActionButtonsElm;
+        this.actionOkButtonElm;
+        this.actionCancelButtonElm;
+
         this.loadComponent();
     }
 
@@ -41,6 +45,10 @@ class HemeraCalendar {
         this.containerCalendarDatesElm = document.createElement('div');
 
         this.containerCalendarMonthYearElm = document.createElement('div');
+
+        this.containerCalendarActionButtonsElm = document.createElement('div');
+        this.actionOkButtonElm = document.createElement('button');
+        this.actionCancelButtonElm = document.createElement('button');
     }
 
     _defineCalendarDefaultPosition(x = 50, y = 50) {
@@ -75,6 +83,7 @@ class HemeraCalendar {
         this.containerElm.appendChild(this.containerCalendarDays);
         this.containerElm.appendChild(this.containerCalendarDatesElm);
         this.containerElm.appendChild(this.containerCalendarMonthYearElm);
+        this.containerElm.appendChild(this.containerCalendarActionButtonsElm);
 
         this.containerYearMonthElm.appendChild(this.yearMonthElm);
         this.containerYearMonthElm.appendChild(
@@ -90,16 +99,9 @@ class HemeraCalendar {
         });
         this.yearMonthElm.innerText = `${this.calendarEngine.getCurrentMonthName().expanded} ${this.calendarEngine.getCurrentYear()}`;
 
-        this.nextYearMonthElm.addEventListener('click', () => {
-            if (this.isDatesView)
-                this.monthController(1, 'add');
-            else this.yearController(1, 'add');
-        });
-        this.prevYearMonthElm.addEventListener('click', () => {
-            if (this.isDatesView)
-                this.monthController(1, 'remove');
-            else this.yearController(1, 'remove');
-        });
+        this.containerCalendarActionButtonsElm.setAttribute('open', '');
+        this.containerCalendarActionButtonsElm.appendChild(this.actionCancelButtonElm);
+        this.containerCalendarActionButtonsElm.appendChild(this.actionOkButtonElm);
     }
 
     loadElementStyles() {
@@ -122,6 +124,10 @@ class HemeraCalendar {
         this.containerCalendarDatesElm.classList.add('CalendarDates');
 
         this.containerCalendarMonthYearElm.classList.add('CalendarMonthSelection');
+        this.containerCalendarActionButtonsElm.classList.add('CalendarActionContainer');
+
+        this.actionOkButtonElm.innerText = 'Ok';
+        this.actionCancelButtonElm.innerText = 'Cancel';
     }
 
     loadEvents() {
@@ -135,6 +141,17 @@ class HemeraCalendar {
         this.yearMonthElm.addEventListener('click', () => {
             this.toggleDatesArea();
             console.log('clicado');
+        });
+
+        this.nextYearMonthElm.addEventListener('click', () => {
+            if (this.isDatesView)
+                this.monthController(1, 'add');
+            else this.yearController(1, 'add');
+        });
+        this.prevYearMonthElm.addEventListener('click', () => {
+            if (this.isDatesView)
+                this.monthController(1, 'remove');
+            else this.yearController(1, 'remove');
         });
     }
 
@@ -353,6 +370,10 @@ class HemeraCalendar {
         this.containerCalendarDays.setAttribute('close', '');
         this.containerCalendarDays.removeAttribute('open');
         this.containerCalendarDays.addEventListener('animationend', onAnimationEnd, { once: true});
+        
+        this.containerCalendarActionButtonsElm.setAttribute('close', '');
+        this.containerCalendarActionButtonsElm.removeAttribute('open');
+        this.containerCalendarActionButtonsElm.addEventListener('animationend', onAnimationEnd, { once: true});
     }
 
     showDatesArea() {
@@ -364,7 +385,10 @@ class HemeraCalendar {
         this.containerCalendarDatesElm.setAttribute('open', '');
 
         this.containerCalendarDays.removeAttribute('close');
-        this.containerCalendarDays.setAttribute('open', '');     
+        this.containerCalendarDays.setAttribute('open', '');
+
+        this.containerCalendarActionButtonsElm.setAttribute('open', '');
+        this.containerCalendarActionButtonsElm.removeAttribute('close');
     }
 
     toggleDatesArea() {

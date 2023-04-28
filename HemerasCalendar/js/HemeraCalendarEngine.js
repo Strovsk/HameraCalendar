@@ -19,7 +19,7 @@ class HemeraCalendarEngine {
         this.selections = [];
 
         this.shortWeekDaysOptions = {
-            'pt-br': ['D', 'S', 'T', 'Q', 'Qt', 'S', 'Sb'],
+            'pt-br': ['D', 'S', 'T', 'Q', 'Qt', 'S', 'S'],
             en: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
         };
         this.monthsOptions = {
