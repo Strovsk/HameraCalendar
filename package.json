@@ -1,0 +1,29 @@
+{
+  "name": "hameracalendar",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel src/HemerasCalendar/js --presets minify --out-file dist/HemeraCalendar.min.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Strovsk/HameraCalendar.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Strovsk/HameraCalendar/issues"
+  },
+  "homepage": "https://github.com/Strovsk/HameraCalendar#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.21.5",
+    "babel-plugin-transform-remove-console": "^6.9.4",
+    "babel-preset-minify": "^0.5.2"
+  }
+}

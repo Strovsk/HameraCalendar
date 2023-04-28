@@ -1,0 +1,8 @@
+{
+    "presets": [
+        ["minify", {
+            "out-file": "dist/HemeraCalendar.min.js"
+        }]
+    ],
+    "plugins": ["transform-remove-console"]
+}
