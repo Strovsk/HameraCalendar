@@ -1,2 +1,4 @@
 .vscode
 .obsidian
+node_modules
+dist
