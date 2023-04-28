@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400;1,500;1,700&display=swap");
 
 .Calendar {
+    --hover-color: rgba(40, 40, 40, 0.1);
     width: 450px;
     height: 450px;
     background-color: #fff;
@@ -122,6 +123,7 @@
     padding: 10px;
     /*   border: 2px dotted green; */
     background-color: transparent;
+    border-radius: 5px;
     cursor: pointer;
 }
 
@@ -314,19 +316,19 @@
 
 @media (hover) {
     .calendarDate:hover {
-        background-color: rgba(50, 50, 50, .3);
+        background-color: var(--hover-color);
     }
     .CalendarYearMonthController-button:hover {
-        background-color: rgba(40, 40, 40, 0.3);
+        background-color: var(--hover-color);
     }
     .CalendarMonthYear:hover {
-        background-color: rgba(40, 40, 40, 0.3);
+        background-color: var(--hover-color);
     }
     .CalendarMonthSelection div:hover {
-        background-color: rgba(40, 40, 40, 0.3);
+        background-color: var(--hover-color);
         font-weight: 500;
     }
     .CalendarActionContainer button:hover {
-        background-color: rgba(40, 40, 40, 0.1);
+        background-color: var(--hover-color);
     }
 }
