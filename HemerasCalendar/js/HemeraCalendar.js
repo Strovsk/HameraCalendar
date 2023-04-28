@@ -7,6 +7,7 @@ class HemeraCalendar {
             pos: { x: 'start', gapTop: 20, gapLeft: 0 }, // undefined | { x: number, y: number }
             selectionType: 'range',
             markCurrentDay: true,
+            closeAfterSelect: false,
             onSelect: (selections) => {},
             onConfirm: (selections, event) => {},
             onCancel: (selections, event) => {},
@@ -92,7 +93,9 @@ class HemeraCalendar {
         this.containerElm.appendChild(this.containerCalendarDays);
         this.containerElm.appendChild(this.containerCalendarDatesElm);
         this.containerElm.appendChild(this.containerCalendarMonthYearElm);
-        this.containerElm.appendChild(this.containerCalendarActionButtonsElm);
+
+        if (!this.options.closeAfterSelect)
+            this.containerElm.appendChild(this.containerCalendarActionButtonsElm);
 
         this.containerYearMonthElm.appendChild(this.yearMonthElm);
         this.containerYearMonthElm.appendChild(
