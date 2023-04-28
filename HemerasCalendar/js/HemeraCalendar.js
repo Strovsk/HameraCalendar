@@ -10,7 +10,12 @@ class HemeraCalendar {
             onSelect: (selections) => {
                 console.log('date selected', selections);
             },
-            onConfirm: () => {},
+            onConfirm: (selections, event) => {
+                console.log('confirmation', selections, event);
+            },
+            onCancel: (selections, event) => {
+                console.log('cancel', selections, event);
+            },
             ...options,
         };
 
@@ -156,6 +161,16 @@ class HemeraCalendar {
             if (this.isDatesView)
                 this.monthController(1, 'remove');
             else this.yearController(1, 'remove');
+        });
+
+        this.actionOkButtonElm.addEventListener('click', (event) => {
+            this.options.onConfirm(this.calendarEngine.selections, event);
+            this.hide();
+        });
+
+        this.actionCancelButtonElm.addEventListener('click', (event) => {
+            this.options.onCancel(this.calendarEngine.selections, event);
+            this.hide();
         });
     }
 
