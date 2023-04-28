@@ -4,18 +4,12 @@ class HemeraCalendar {
             language: 'pt-br',
             static: false,
             container: undefined,
-            pos: undefined, // undefined | { x: number, y: number }
+            pos: { x: 'start', gapTop: 20, gapLeft: 0 }, // undefined | { x: number, y: number }
             selectionType: 'range',
-            markCurrenDay: true,
-            onSelect: (selections) => {
-                console.log('date selected', selections);
-            },
-            onConfirm: (selections, event) => {
-                console.log('confirmation', selections, event);
-            },
-            onCancel: (selections, event) => {
-                console.log('cancel', selections, event);
-            },
+            markCurrentDay: true,
+            onSelect: (selections) => {},
+            onConfirm: (selections, event) => {},
+            onCancel: (selections, event) => {},
             ...options,
         };
 
@@ -61,17 +55,23 @@ class HemeraCalendar {
     }
 
     _defineCalendarDefaultPosition(x = 50, y = 50) {
+        const posRefElm = document.querySelector(this.options.container);
+        const refStyles = posRefElm.getBoundingClientRect();
+        const positionPresetX = {
+            start: Math.round(refStyles.x),
+            end: Math.round(refStyles.x + refStyles.width),
+            center: Math.round(refStyles.x + (refStyles.width / 2)),
+        };
+
         if (this.options.container) {
-            const posRefElm = document.querySelector(this.options.container);
             if (posRefElm) {
-                const refStyles = posRefElm.getBoundingClientRect();
                 console.log('top', refStyles);
-                const gapLeft = 0;
-                const gapTop = 20;
-                return {
-                    y: Math.round(refStyles.y + refStyles.height + gapTop),
-                    x: Math.round(refStyles.x + (refStyles.width / 2) + gapLeft),
-                };
+                const gapTop = this.options.pos.gapTop;
+                const gapLeft = this.options.pos.gapLeft;
+                const x = ['start', 'end', 'center'].includes(this.options.pos.x)
+                    ? positionPresetX[this.options.pos.x]
+                    : positionPresetX.center;
+                return { y: Math.round(refStyles.y + refStyles.height + gapTop), x: x + gapLeft };
             }
         } else if (this.options.pos) {
             return { x: this.options.pos.x, y: this.options.pos.y };
