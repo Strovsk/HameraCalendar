@@ -34,6 +34,8 @@ class HemeraCalendar {
         this.actionOkButtonElm;
         this.actionCancelButtonElm;
 
+        this.containerDefaultWidth = 450;
+
         this.loadComponent();
     }
 
@@ -74,7 +76,7 @@ class HemeraCalendar {
                     ? positionPresetX[this.options.pos.x]
                     : positionPresetX.center + gapLeft;
 
-                if (x + refStyles.width > window.innerWidth) x = window.innerWidth - x / 2;
+                if (x + refStyles.width > window.innerWidth) x = window.innerWidth - this.containerDefaultWidth - 20;
 
                 return { y: Math.round(refStyles.y + refStyles.height + gapTop), x };
             }
