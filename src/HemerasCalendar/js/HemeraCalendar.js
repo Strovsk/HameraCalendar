@@ -2,12 +2,13 @@ class HemeraCalendar {
     constructor(options = {}) {
         this.options = {
             language: 'pt-br',
-            static: false,
+            stayOnTop: false,
             container: undefined,
-            pos: { x: 'start', gapTop: 20, gapLeft: 0 }, // undefined | { x: number, y: number }
+            pos: { x: 'center', gapTop: 20, gapLeft: 0 }, // undefined | { x: number, y: number }
             selectionType: 'range',
             markCurrentDay: true,
             closeAfterSelect: false,
+            init: true,
             onSelect: (selections) => {},
             onConfirm: (selections, event) => {},
             onCancel: (selections, event) => {},
@@ -94,7 +95,7 @@ class HemeraCalendar {
         this.containerElm.appendChild(this.containerCalendarDatesElm);
         this.containerElm.appendChild(this.containerCalendarMonthYearElm);
 
-        if (!this.options.closeAfterSelect)
+        if (!this.mustShowActionButtons())
             this.containerElm.appendChild(this.containerCalendarActionButtonsElm);
 
         this.containerYearMonthElm.appendChild(this.yearMonthElm);
@@ -118,7 +119,7 @@ class HemeraCalendar {
 
     loadElementStyles() {
         this.containerElm.classList.add('Calendar');
-        if (this.options.static) this.show();
+        if (this.options.stayOnTop) this.show();
 
         this.containerYearMonthElm.classList.add('CalendarYearMonthController');
         this.buttonsContainerYearMonthElm.classList.add('CalendarYearMonthController-buttonContainer');
@@ -185,6 +186,16 @@ class HemeraCalendar {
         this.insertDatesInScreen();
         this.insertMonthsInScreen();
         this.loadEvents();
+
+        if (this.options.init) this.init();
+    }
+
+    mustShowActionButtons() {
+        return this.options.closeAfterSelect || this.options.stayOnTop;
+    }
+
+    init() {
+        document.body.appendChild(this.containerElm);
     }
 
     setYearMonth(text) {
@@ -236,6 +247,7 @@ class HemeraCalendar {
 
     insertDatesInScreen() {
         this.containerCalendarDatesElm.innerHTML = '';
+
         const dateClickEvent = (event) => {
             const month = parseInt(event.target.getAttribute('month'), 10);
             const year = parseInt(event.target.getAttribute('year'), 10);
