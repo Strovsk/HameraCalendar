@@ -70,10 +70,13 @@ class HemeraCalendar {
                 console.log('top', refStyles);
                 const gapTop = this.options.pos.gapTop;
                 const gapLeft = this.options.pos.gapLeft;
-                const x = ['start', 'end', 'center'].includes(this.options.pos.x)
+                let x = ['start', 'end', 'center'].includes(this.options.pos.x)
                     ? positionPresetX[this.options.pos.x]
-                    : positionPresetX.center;
-                return { y: Math.round(refStyles.y + refStyles.height + gapTop), x: x + gapLeft };
+                    : positionPresetX.center + gapLeft;
+
+                if (x + refStyles.width > window.innerWidth) x = window.innerWidth - x / 2;
+
+                return { y: Math.round(refStyles.y + refStyles.height + gapTop), x };
             }
         } else if (this.options.pos) {
             return { x: this.options.pos.x, y: this.options.pos.y };
