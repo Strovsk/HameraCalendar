@@ -300,6 +300,7 @@
 @media (max-width: 600px) {
     .Calendar {
         width: 80vw;
+        min-width: 300px;
         height: 70vh;
         margin: auto;
         left: 0;
@@ -311,6 +312,17 @@
         /* background: rgb(0, 0, 0, 0.5); */
         background: red;
         /* opacity: 0; */
+    }
+}
+
+@media (max-width: 300px) {
+    .Calendar {
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+        left: 0 !important;
+        top: 0 !important;
+        position: fixed;
     }
 }
 

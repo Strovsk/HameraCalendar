@@ -191,7 +191,7 @@ class HemeraCalendar {
     }
 
     mustShowActionButtons() {
-        return this.options.closeAfterSelect || this.options.stayOnTop;
+        return this.options.closeAfterSelect || !this.options.stayOnTop;
     }
 
     init() {
