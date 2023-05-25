@@ -1,8 +1,11 @@
 {
     "presets": [
-        ["minify", {
-            "out-file": "dist/HemeraCalendar.min.js"
-        }]
+        ["minify"], ["@babel/preset-typescript"]
     ],
-    "plugins": ["transform-remove-console"]
+    "plugins": [
+        "transform-remove-console",
+        ["modules-reolver", {
+            "root": ["./src/HemerasCalendar/ts"]
+        }]
+    ]
 }
