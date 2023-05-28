@@ -1,5 +1,3 @@
-import { Languages } from "helpers/languages";
-
 declare type AppPosition = {
     x: string | number;
     y: string | number;

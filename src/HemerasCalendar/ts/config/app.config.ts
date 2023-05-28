@@ -1,5 +1,3 @@
-import { Languages } from 'helpers/languages';
-
 const options: AppOptions = {
     language: Languages.BR,
     stayOnTop: false,

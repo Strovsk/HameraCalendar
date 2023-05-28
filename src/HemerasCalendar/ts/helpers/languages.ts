@@ -1,8 +1,6 @@
-enum Languages { BR, EN };
-
 const shortWeekDaysOptions = {
     [Languages.BR]: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'],
-    [Languages.EN]: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+    [Languages.US]: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
 };
 
 const monthsOptions = {
@@ -20,7 +18,7 @@ const monthsOptions = {
         { short: 'Nov', expanded: 'Novembro' },
         { short: 'Dez', expanded: 'Dezembro' },
     ],
-    [Languages.EN]: [
+    [Languages.US]: [
         { short: 'Jan', expanded: 'January' },
         { short: 'Feb', expanded: 'February' },
         { short: 'Mar', expanded: 'March' },
@@ -36,4 +34,4 @@ const monthsOptions = {
     ],
 };
 
-export { monthsOptions, shortWeekDaysOptions, Languages };
+export { monthsOptions, shortWeekDaysOptions };
