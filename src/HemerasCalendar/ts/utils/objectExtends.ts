@@ -1,19 +1,20 @@
-export function objectExtends(objA: object, objB: object): object {
+export function objectExtends<T>(objA: T, objB: Partial<T>): T {
     const result = objA;
 
-    const objectBKeys = Object.keys(objB);
-
     for (let key in result) {
-        if (!objectBKeys.includes(key)) continue;
+        if (!objB[key]) continue;
     
         if (typeof result[key] === 'function') continue;
     
         if (typeof result[key] === 'object') {
-            result[key] = objectExtends(result[key], objB[key]);
+            result[key] = objectExtends(
+                result[key],
+                objB[key] as Partial<typeof result[typeof key]>,
+            );
             continue;
         }
     
-        result[key] = objB[key];
+        result[key] = objB[key] as typeof result[typeof key];
     }
     return result;
 }
