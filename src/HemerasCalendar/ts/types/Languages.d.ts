@@ -1,1 +1,1 @@
-enum Languages { BR = 'pt-br', US = 'en-us' };
+declare enum Languages { BR = 'pt-br', US = 'en-us' };

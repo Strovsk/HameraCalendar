@@ -6,7 +6,7 @@ export default class HemeraCalendarEngine {
     public options: AppOptions = Config.appOptions;
     public today: Date = new Date();
     public currentMonthYear = {
-        month: this.today.getMonth(),
+        month: this.today.getMonth() as Month,
         year: this.today.getFullYear(),
     };
     public selections: AppSelectedDateObject[] = [];
@@ -17,45 +17,49 @@ export default class HemeraCalendarEngine {
         this.options = objectExtends(this.options, options) as AppOptions;
     }
 
-    setMonth(month) {
-        if (month <= 0 && month >= 12) return;
+    public set month(month: Month) {
+        if (month <= 0 && month >= 11) throw new Error('month must be a number between 0 and 11');
         this.currentMonthYear.month = month;
     }
 
-    addMonth(numberOfMonths = 1) {
+    public addMonth(numberOfMonths = 1) {
+        // TODO deprecate this method
         const { month, year } = this.currentMonthYear;
         const bufferDate = new Date(year, month + numberOfMonths, 1);
         this.currentMonthYear.month = bufferDate.getMonth();
         this.currentMonthYear.year = bufferDate.getFullYear();
     }
 
-    removeMonth(numberOfMonths = 1) {
+    public removeMonth(numberOfMonths = 1) {
+        // TODO deprecate this method
         const { month, year } = this.currentMonthYear;
         const bufferDate = new Date(year, month - numberOfMonths, 1);
         this.currentMonthYear.month = bufferDate.getMonth();
         this.currentMonthYear.year = bufferDate.getFullYear();
     }
 
-    setYear(year) {
+    public set year(year: Year) {
         if (typeof year !== 'number') return;
         this.currentMonthYear.year = year;
     }
 
-    addYear(numberOfYears = 1) {
+    public addYear(numberOfYears = 1) {
+        // TODO deprecate this method
         const { month, year } = this.currentMonthYear;
         const bufferDate = new Date(year + numberOfYears, month, 1);
         this.currentMonthYear.month = bufferDate.getMonth();
         this.currentMonthYear.year = bufferDate.getFullYear();
     }
 
-    removeYear(numberOfYears = 1) {
+    public removeYear(numberOfYears = 1) {
+        // TODO deprecate this method
         const { month, year } = this.currentMonthYear;
         const bufferDate = new Date(year - numberOfYears, month, 1);
         this.currentMonthYear.month = bufferDate.getMonth();
         this.currentMonthYear.year = bufferDate.getFullYear();
     }
 
-    _getMonthInfo(monthNumber, year) {
+    private getMonthInfo(monthNumber: Month, year: Year): MonthInfo {
         const numberOfDays = new Date(year, monthNumber + 1, 0).getDate();
         const monthInfo = new Date(year, monthNumber, 1);
         const startWeekDay = monthInfo.getDay();
@@ -76,24 +80,22 @@ export default class HemeraCalendarEngine {
         };
     }
 
-    mustResetSelection() {
+    public mustResetSelection(): boolean {
         return this.options.selectionType === '1' && this.selections.length > 0;
     }
 
-    resetSelections() {
+    public resetSelections() {
         this.selections = [];
     }
 
-    isToday(year, month, date) {
+    private isToday(year: Year, month: Month, date: MonthDate): boolean {
         return this.today.getFullYear() === year && this.today.getMonth() === month && this.today.getDate() === date;
     }
 
-    getArrayDate() {
-        // A date is a object with the informations:
-        // { date, month, year, day, index, isAnotherMonth, isNextMonth, isLastMonth, isCurrentDate, isSelected, isSubSelected }
-        const monthInfo = this._getMonthInfo(this.currentMonthYear.month, this.currentMonthYear.year);
+    public getArrayDate(): DateInfo[] {
+        const monthInfo = this.getMonthInfo(this.currentMonthYear.month, this.currentMonthYear.year);
 
-        const arrayDates = [];
+        const arrayDates: DateInfo[] = [];
         const daysInWeek = 7;
         const thursdayIndex = 5;
         let numberOfWeekRows = 5;
@@ -115,7 +117,7 @@ export default class HemeraCalendarEngine {
                     isNextMonth: false,
                     isSubSelected: this.isSubSelectedDate(monthInfo.lastMonthYear, monthInfo.lastMonthNumber, lastMonthDate),
                     isSelected: this.isDateInSelection(monthInfo.lastMonthYear, monthInfo.lastMonthNumber, lastMonthDate),
-                });
+                } as DateInfo);
             } else if (i > monthInfo.startWeekDay + monthInfo.numberOfDays) {
                 nextMonthDate +=1
                 arrayDates.push({
@@ -128,10 +130,10 @@ export default class HemeraCalendarEngine {
                     isNextMonth: true,
                     isSelected: this.isDateInSelection(monthInfo.nextMonthYear, monthInfo.nextMonthNumber, nextMonthDate),
                     isSubSelected: this.isSubSelectedDate(monthInfo.nextMonthYear, monthInfo.nextMonthNumber, nextMonthDate),
-                });
+                } as DateInfo);
             } else {
-                const currentDate = i - monthInfo.startWeekDay;
-                const dateInfo = {
+                const currentDate = i - monthInfo.startWeekDay as MonthDays;
+                const dateInfo: DateInfo = {
                     year: monthInfo.year,
                     month: monthInfo.monthNumber,
                     date: currentDate,
@@ -150,7 +152,7 @@ export default class HemeraCalendarEngine {
         return arrayDates;
     }
 
-    selectDate(year, month, date) {
+    public selectDate(year: Year, month: Month, date: MonthDate) {
         try {
             new Date(year, month, date);
         } catch (error) { return false; }
@@ -239,7 +241,7 @@ export default class HemeraCalendarEngine {
         return this.options.selectionType === 'range' && this.selections.length === 1;
     }
 
-    isDateSubSelectingRangeMode(toCompareDate, limitDate) {
+    isDateSubSelectingRangeMode(toCompareDate, limitDate): boolean {
         if (!this.isSubSelectingRangeMode()) return false;
         const selectedDate = new Date(this.selections[0].year, this.selections[0].month, this.selections[0].date);
         const toCompareDateObj = new Date(toCompareDate.year, toCompareDate.month, toCompareDate.date);
@@ -250,7 +252,7 @@ export default class HemeraCalendarEngine {
         return toCompareDateObj > sortedPeriod[0] && toCompareDateObj < sortedPeriod[1];
     }
 
-    mustClose() {
+    public mustClose(): boolean {
         return (
             (this.options.selectionType === '1' && this.selections.length === 1) ||
             (this.options.selectionType === 'range' && this.selections.length === 2)
