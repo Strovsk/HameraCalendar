@@ -3,7 +3,7 @@ const options: AppOptions = {
     stayOnTop: false,
     container: undefined,
     pos: { x: 'center', gapTop: 0, gapLeft: 0, y: 0 },
-    selectionType: 'range',
+    selectionType: DateSelectionOption.range,
     markCurrentDay: true,
     closeAfterSelect: true,
     init: true,
