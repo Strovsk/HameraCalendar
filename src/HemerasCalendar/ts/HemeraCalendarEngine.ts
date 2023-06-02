@@ -63,17 +63,18 @@ export default class HemeraCalendarEngine {
         const numberOfDays = new Date(year, monthNumber + 1, 0).getDate();
         const monthInfo = new Date(year, monthNumber, 1);
         const startWeekDay = monthInfo.getDay();
-        const monthName = this.monthsOptions[this.options.language][monthNumber];
+        const monthName = this.monthsOptions[this.options.language][monthNumber].expanded;
         const weekdayName = this.shortWeekDaysOptions[this.options.language][startWeekDay];
 
         const lastMonth = new Date(year, monthNumber - 1, 1);
         const nextMonth = new Date(year, monthNumber + 1, 1);
-        const lastMonthNumberOfDays = new Date(year, monthNumber, 0).getDate();
-        const nextMonthNumberOfDays = new Date(year, monthNumber + 2, 0).getDate();
+        const lastMonthNumberOfDays = new Date(year, monthNumber, 0).getDate() as MonthDays;
+        const nextMonthNumberOfDays = new Date(year, monthNumber + 2, 0).getDate() as MonthDays;
         const lastMonthNumber = lastMonth.getMonth();
         const nextMonthNumber = nextMonth.getMonth();
         const lastMonthYear = lastMonth.getFullYear();
         const nextMonthYear = nextMonth.getFullYear();
+
         return {
             numberOfDays, startWeekDay, monthNumber, year, monthName, weekdayName,
             nextMonthNumber, lastMonthNumber, lastMonthYear, nextMonthYear, nextMonthNumberOfDays, lastMonthNumberOfDays,
@@ -81,10 +82,10 @@ export default class HemeraCalendarEngine {
     }
 
     public mustResetSelection(): boolean {
-        return this.options.selectionType === '1' && this.selections.length > 0;
+        return this.options.selectionType === DateSelectionOption.one && this.selections.length > 0;
     }
 
-    public resetSelections() {
+    public resetSelections(): void {
         this.selections = [];
     }
 
@@ -93,6 +94,7 @@ export default class HemeraCalendarEngine {
     }
 
     public getArrayDate(): DateInfo[] {
+        // TODO refactor this function Urgent!!
         const monthInfo = this.getMonthInfo(this.currentMonthYear.month, this.currentMonthYear.year);
 
         const arrayDates: DateInfo[] = [];
@@ -152,35 +154,36 @@ export default class HemeraCalendarEngine {
         return arrayDates;
     }
 
-    public selectDate(year: Year, month: Month, date: MonthDate) {
+    public selectDate(year: Year, month: Month, date: MonthDate): boolean {
         try {
             new Date(year, month, date);
         } catch (error) { return false; }
 
         if (this.isDateInSelection(year, month, date)) return false;
 
-        return ({
-            'n': () => {
-                this.selections.push({ year, month, date })
+        const options: HemeraEngineDateSelectionOptions = {
+            one: () => {
+                if (this.selections.length > 0) this.resetSelections();
+                this.selections.push({ year, month, date });
                 return true;
             },
-            'range': () => {
+            multiple: () => {
+                this.selections.push({ year, month, date });
+                return true;
+            },
+            range: () => {
                 if (this.selections.length >= 2) return false;
                 this.selections.push({ year, month, date });
                 return true;
             },
-            '1': () => {
-                if (this.selections.length > 0) this.resetSelections();
-                this.selections.push({ year, month, date });
-                console.log(this.selections);
-                return true;
-            }
-        })[this.options.selectionType]();
+        };
+
+        return options[this.options.selectionType as keyof HemeraEngineDateSelectionOptions]();
     }
 
-    toggleDateSelection(year, month, date) {
+    public toggleDateSelection(year: Year, month: Month, date: MonthDate): boolean {
         const findDate = this.selections.find(
-            (selectedDate) => selectedDate.year === year && selectedDate.month === month && selectedDate.date === date
+            (selectedDate) => selectedDate.year === year && selectedDate.month === month && selectedDate.date === date,
         );
 
         if (!findDate) return this.selectDate(year, month, date);
@@ -190,72 +193,84 @@ export default class HemeraCalendarEngine {
         return false;
     }
 
-    canSelectDate() {
+    public canSelectDate(): boolean {
         return (
-            this.options.selectionType === 'n' ||
-            this.selections === 0 ||
-            (this.selections === 1 && this.options.selectionType === 'range')
+            this.options.selectionType === DateSelectionOption.multiple ||
+            this.selections.length === 0 ||
+            (this.selections.length === 1 && this.options.selectionType === DateSelectionOption.range)
         );
     }
 
-    isDateInSelection(year, month, date) {
+    isDateInSelection(year: Year, month: Month, date: MonthDate) {
         return this.selections.some(
             (selectedDate) => selectedDate.year === year && selectedDate.month === month && selectedDate.date === date
         );
     }
 
-    isSubSelectedDate(year, month, date) {
+    isSubSelectedDate(year: Year, month: Month, date: MonthDate) {
         if (!this.isRangeDefined()) return false;
-        this.selections.sort((dateA, dateB) => (
-            new Date(dateA.year, dateA.month, dateA.date) - new Date(dateB.year, dateB.month, dateB.date)
-        ));
+
+        const checkDate = (dateA: AppSelectedDateObject, dateB: AppSelectedDateObject) => {
+            const dateAObj = new Date(dateA.year, dateA.month, dateA.date);
+            const dateBObj = new Date(dateB.year, dateB.month, dateB.date);
+            return dateAObj.getTime() - dateBObj.getTime();
+        }
+
+        this.selections.sort(checkDate);
+
         const toCompareDate = new Date(year, month, date);
         const startDate = new Date(this.selections[0].year, this.selections[0].month, this.selections[0].date);
         const endDate = new Date(this.selections[1].year, this.selections[1].month, this.selections[1].date);
+
         return toCompareDate > startDate && toCompareDate < endDate;
     }
 
-    isRangeDefined() {
+    public isRangeDefined(): boolean {
         // There's two dates in selections array and selection type is 'range'
-        return this.options.selectionType === 'range' && this.selections.length === 2;
+        return this.options.selectionType === DateSelectionOption.range && this.selections.length === 2;
     }
 
-    hasSubSelection() {
-        return this.options.selectionType === 'range' && this.selections.length === 2;
+    public hasSubSelection(): boolean {
+        return this.options.selectionType === DateSelectionOption.range && this.selections.length === 2;
     }
 
-    getCurrentMonthName(monthNumber = undefined) {
+    public getCurrentMonthName(monthNumber = undefined) {
         if (!monthNumber) return this.monthsOptions[this.options.language][this.currentMonthYear.month];
         return this.monthsOptions[this.options.language][monthNumber];
     }
 
-    getCurrentYear() {
+    public getCurrentYear(): Year {
+        // TODO remove this method
         return this.currentMonthYear.year;
     }
 
-    getWeekDays() {
+    public getWeekDays() {
+        // TODO transform it in a getter
         return this.shortWeekDaysOptions[this.options.language];
     }
 
-    isSubSelectingRangeMode() {
-        return this.options.selectionType === 'range' && this.selections.length === 1;
+    public isSubSelectingRangeMode(): boolean {
+        return this.options.selectionType === DateSelectionOption.range && this.selections.length === 1;
     }
 
-    isDateSubSelectingRangeMode(toCompareDate, limitDate): boolean {
+    public isDateSubSelectingRangeMode(toCompareDate: AppSelectedDateObject, limitDate: AppSelectedDateObject): boolean {
         if (!this.isSubSelectingRangeMode()) return false;
+
         const selectedDate = new Date(this.selections[0].year, this.selections[0].month, this.selections[0].date);
         const toCompareDateObj = new Date(toCompareDate.year, toCompareDate.month, toCompareDate.date);
         const limitDateObj = new Date(limitDate.year, limitDate.month, limitDate.date);
+
         const sortedPeriod = [limitDateObj, selectedDate].sort(
-            (dateA, dateB) => dateA - dateB
+            (dateA, dateB) => dateA.getTime() - dateB.getDate(),
         );
+
         return toCompareDateObj > sortedPeriod[0] && toCompareDateObj < sortedPeriod[1];
     }
 
     public mustClose(): boolean {
         return (
-            (this.options.selectionType === '1' && this.selections.length === 1) ||
-            (this.options.selectionType === 'range' && this.selections.length === 2)
+            (this.options.selectionType === DateSelectionOption.one && this.selections.length === 1) ||
+            (this.options.selectionType === DateSelectionOption.range && this.selections.length === 2)
         ) && this.options.closeAfterSelect;
     }
 }

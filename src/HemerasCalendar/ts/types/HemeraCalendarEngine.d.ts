@@ -24,3 +24,7 @@ declare type DateInfo = {
     isSelected: boolean,
     isSubSelected: boolean,
 }
+
+declare type HemeraEngineDateSelectionOptions = {
+    [key in DateSelectionOption]: () => boolean;
+}

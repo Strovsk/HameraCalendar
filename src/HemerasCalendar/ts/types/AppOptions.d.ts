@@ -6,9 +6,15 @@ declare type AppPosition = {
 };
 
 declare type AppSelectedDateObject = {
-    year: number;
-    month: number;
-    day: number;
+    year: Year;
+    month: Month;
+    date: MonthDate;
+};
+
+enum DateSelectionOption {
+    one='one',
+    multiple='multiple',
+    range='range',
 };
 
 declare type AppOptions = {
@@ -16,7 +22,7 @@ declare type AppOptions = {
     stayOnTop: boolean;
     container: string | undefined;
     pos: AppPosition | undefined;
-    selectionType: string;
+    selectionType: DateSelectionOption;
     markCurrentDay: boolean;
     closeAfterSelect: boolean;
     init: boolean;
