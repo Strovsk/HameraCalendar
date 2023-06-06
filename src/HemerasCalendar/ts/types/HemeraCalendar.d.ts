@@ -5,3 +5,11 @@ declare type CalendarPositionPresetX = {
     end: number;
     center: number;
 };
+
+declare type MonthContollerOptions = { add: () => void; remove: () => void};
+
+declare type YearContollerOptions = { add: () => void; remove: () => void};
+
+declare type HTMLEvent = {
+    target: HTMLElement;
+}

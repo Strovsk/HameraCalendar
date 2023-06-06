@@ -166,7 +166,7 @@ export default class HemeraCalendar {
         });
     }
 
-    loadComponent() {
+    private loadComponent() {
         this.createElementStructure();
         this.loadElementStyles();
     
@@ -177,30 +177,32 @@ export default class HemeraCalendar {
         if (this.options.init) this.init();
     }
 
-    mustShowActionButtons() {
+    public mustShowActionButtons() {
         return this.options.closeAfterSelect || !this.options.stayOnTop;
     }
 
-    init() {
+    public init() {
         document.body.appendChild(this.containerElm);
     }
 
-    setYearMonth(text: string) {
+    public setYearMonth(text: string) {
         // TODO transform it in a getter
         // REFACTOR subsitute all this.yearmonthElm.innerText for this function
         this.yearMonthElm.innerText = text;
     }
 
-    setMonthYearToCurrent() {
+    public setMonthYearToCurrent() {
         // TODO transform it in a setter
         this.yearMonthElm.innerText = `${this.calendarEngine.getCurrentMonthName().expanded} ${this.calendarEngine.getCurrentYear()}`;
     }
 
-    monthController(monthQtd = 1, option = 'add') {
-        ({
-            'add': () => this.calendarEngine.addMonth(monthQtd),
-            'remove': () => this.calendarEngine.removeMonth(monthQtd),
-        })[option]();
+    public monthController(monthQtd = 1, option: keyof MonthContollerOptions = 'add') {
+        const options: MonthContollerOptions = {
+            add: () => this.calendarEngine.addMonth(monthQtd),
+            remove: () => this.calendarEngine.removeMonth(monthQtd),
+        };
+
+        options[option]();
 
         const monthName = this.calendarEngine.getCurrentMonthName().expanded;
         const year = this.calendarEngine.getCurrentYear()
@@ -209,11 +211,13 @@ export default class HemeraCalendar {
         this.insertDatesInScreen();
     }
 
-    yearController(yearQtd = 1, option = 'add') {
-        ({
+    public yearController(yearQtd = 1, option: keyof YearContollerOptions = 'add') {
+        const options = {
             'add': () => this.calendarEngine.addYear(yearQtd),
             'remove': () => this.calendarEngine.removeYear(yearQtd),
-        })[option]();
+        };
+
+        options[option]();
 
         const year = this.calendarEngine.getCurrentYear()
 
@@ -225,7 +229,7 @@ export default class HemeraCalendar {
         this.calendarEngine.monthsOptions[this.options.language].forEach((monthName, index) => {
             const monthElm = document.createElement('div');
             monthElm.addEventListener('click', () => {
-                this.calendarEngine.setMonth(index);
+                this.calendarEngine.month = index;
                 this.insertDatesInScreen();
                 this.toggleDatesArea();
             });
@@ -237,35 +241,42 @@ export default class HemeraCalendar {
     insertDatesInScreen() {
         this.containerCalendarDatesElm.innerHTML = '';
 
-        const dateClickEvent = (event) => {
-            const month = parseInt(event.target.getAttribute('month'), 10);
-            const year = parseInt(event.target.getAttribute('year'), 10);
-            const date = parseInt(event.target.innerText, 10);
+        const dateClickEvent = (event: MouseEvent) => {
+            if (!event.target) return;
+            const targetElement = event.target as HTMLElement;
+
+            const month = parseInt(targetElement.getAttribute('month') as string, 10);
+            const year = parseInt(targetElement.getAttribute('year') as string, 10);
+            const date = parseInt(targetElement.innerText, 10);
 
             if (this.calendarEngine.mustResetSelection()) this.resetSelection();
             const isSelected = this.calendarEngine.toggleDateSelection(year, month, date);
             if (isSelected) {
-                event.target.classList.add('--selected');
-                this.options.onSelect({
-                    year, month, date,
-                    isToday: event.target.classList.contains('--today'),
-                    isAnotherMonth: event.target.classList.contains('--anotherMonth'),
-                    dateObj: new Date(year, month, date),
-                    target: event.target,
-                });
+                targetElement.classList.add('--selected');
+                if (this.options.onSelect) {
+                    this.options.onSelect({
+                        year, month, date,
+                        isToday: targetElement.classList.contains('--today'),
+                        isAnotherMonth: targetElement.classList.contains('--anotherMonth'),
+                        dateObj: new Date(year, month, date),
+                        target: targetElement,
+                    });
+                }
             }
             else {
-                event.target.classList.remove('--selected');
+                targetElement.classList.remove('--selected');
                 if (this.isMobileDevice()) this.resetRange();
             };
 
             if (this.calendarEngine.mustClose()) setTimeout(() => this.hide(), 300);
         };
 
-        const dateMouseHoverEvent = (event) => {
-            const month = parseInt(event.target.getAttribute('month'), 10);
-            const year = parseInt(event.target.getAttribute('year'), 10);
-            const date = parseInt(event.target.innerText, 10);
+        const dateMouseHoverEvent = (event: MouseEvent) => {
+            if (!event.target) return;
+            const targetElement = event.target as HTMLElement;
+            const month = parseInt(targetElement.getAttribute('month') as string, 10);
+            const year = parseInt(targetElement.getAttribute('year') as string, 10);
+            const date = parseInt(targetElement.innerText, 10);
 
             if (!this.calendarEngine.isSubSelectingRangeMode()) return;
 
@@ -274,14 +285,14 @@ export default class HemeraCalendar {
 
         this.calendarEngine.getArrayDate().forEach((dateObj, index) => {
             const dateElm = document.createElement('div');
-            dateElm.innerText = dateObj.date;
+            dateElm.innerText = String(dateObj.date);
             dateElm.classList.add('calendarDate');
             dateElm.addEventListener('click', dateClickEvent);
             dateElm.addEventListener('mouseenter', dateMouseHoverEvent);
-            dateElm.setAttribute('index', index);
-            dateElm.setAttribute('date', dateObj.date);
-            dateElm.setAttribute('month', dateObj.month);
-            dateElm.setAttribute('year', dateObj.year);
+            dateElm.setAttribute('index', String(index));
+            dateElm.setAttribute('date', String(dateObj.date));
+            dateElm.setAttribute('month', String(dateObj.month));
+            dateElm.setAttribute('year', String(dateObj.year));
 
             if (dateObj.isAnotherMonth)
                 dateElm.classList.add('--anotherMonth');

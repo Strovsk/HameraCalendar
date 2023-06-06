@@ -9,6 +9,10 @@ declare type AppSelectedDateObject = {
     year: Year;
     month: Month;
     date: MonthDate;
+    isToday?: boolean;
+    isAnotherMonth?: boolean;
+    dateObj?: Date;
+    target?: HTMLEvent.target;
 };
 
 enum DateSelectionOption {
@@ -26,7 +30,7 @@ declare type AppOptions = {
     markCurrentDay: boolean;
     closeAfterSelect: boolean;
     init: boolean;
-    onSelect?: (selections: AppSelectedDateObject[]) => any;
+    onSelect?: (selections: AppSelectedDateObject) => any;
     onConfirm?: (selections: AppSelectedDateObject[], event: MouseEventInit) => any;
     onCancel?: (selections: AppSelectedDateObject[], event: MouseEventInit) => any;
 };
