@@ -4,7 +4,7 @@
     ],
     "plugins": [
         "transform-remove-console",
-        ["modules-reolver", {
+        ["module-resolver", {
             "root": ["./src/HemerasCalendar/ts"]
         }]
     ]
