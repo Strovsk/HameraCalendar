@@ -4,36 +4,34 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <link rel="stylesheet" href="HemerasCalendar/css/style.css">
-    <script src="HemerasCalendar/js/HemeraCalendar.js"></script>
-    <script src="HemerasCalendar/js/HemeraCalendarEngine.js"></script>
+    <script src="../dist/HemeraCalendar.min.js"></script>
+    <link rel="icon" type="image/x-icon" href="./calendar.ico">
+
+    <style>
+        #openDateSelector {
+            background-color: #1b1b1b;
+            color: white;
+            width: 120px;
+            height: 40px;
+            cursor: pointer;
+            border: none;
+            font-weight: 800;
+            transition: 0.2s ease all;
+        }
+
+        #openDateSelector:hover {
+            background-color: #eee;
+            color: #1b1b1b;
+            box-shadow: 1px 1px 5px rgba(27, 27, 27, 0.4);
+        }
+    </style>
+
     <title>Hemeras Calendar</title>
 </head>
 <body>
-    <div class="Calendar">
-        <div class="CalendarYearMonthController">
-            <button type="button" class="CalendarMonthYear">March 2023</button>
-            <div class="CalendarYearMonthController-buttonContainer">
-                <button type="button" class="CalendarYearMonthController-button --previous"></button>
-                <button type="button" class="CalendarYearMonthController-button --next"></button>
-            </div>
-        </div>
-        <div class="CalendarDays">
-            <h3>S</h3>
-            <h3>M</h3>
-            <h3>T</h3>
-            <h3>W</h3>
-            <h3>T</h3>
-            <h3>F</h3>
-            <h3>S</h3>
-        </div>
-        <div class="CalendarDates">
-            It's just an template. The right Calendar is full generated in js
-        </div>
-    </div>
-
-    <button id="openDateSelector">SelectDate</button>
+    <button id="openDateSelector">Select Date</button>
 
     <script src="main.js"></script>
 </body>
