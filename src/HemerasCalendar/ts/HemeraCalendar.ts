@@ -225,7 +225,7 @@ export default class HemeraCalendar {
         this.insertDatesInScreen();
     }
 
-    insertMonthsInScreen() {
+    public insertMonthsInScreen() {
         this.calendarEngine.monthsOptions[this.options.language].forEach((monthName, index) => {
             const monthElm = document.createElement('div');
             monthElm.addEventListener('click', () => {
@@ -238,7 +238,7 @@ export default class HemeraCalendar {
         });
     }
 
-    insertDatesInScreen() {
+    public insertDatesInScreen() {
         this.containerCalendarDatesElm.innerHTML = '';
 
         const dateClickEvent = (event: MouseEvent) => {
@@ -310,13 +310,13 @@ export default class HemeraCalendar {
         });
     }
 
-    selectRange(limitYear, limitMonth, limitDate) {
+    public selectRange(limitYear: Year, limitMonth: Month, limitDate: MonthDate) {
         Array.from(
             this.containerCalendarDatesElm.children
         ).forEach((dateElm) => {
-            const toCompareMonth = parseInt(dateElm.getAttribute('month'), 10);
-            const toCompareYear = parseInt(dateElm.getAttribute('year'), 10);
-            const toCompareDate = parseInt(dateElm.innerText, 10);
+            const toCompareMonth = parseInt(dateElm.getAttribute('month') as string, 10);
+            const toCompareYear = parseInt(dateElm.getAttribute('year') as string, 10);
+            const toCompareDate = parseInt((dateElm as HTMLElement).innerText, 10);
 
             const toCompare = { date: toCompareDate, month: toCompareMonth, year: toCompareYear };
             const comparisonLimit = { date: limitDate, month: limitMonth, year: limitYear };
@@ -328,7 +328,7 @@ export default class HemeraCalendar {
         });
     };
     
-    resetRange() {
+    public resetRange() {
         console.log('Executando reset de range');
         if (this.calendarEngine.isRangeDefined()) return;
         Array.from(
@@ -338,7 +338,7 @@ export default class HemeraCalendar {
         });
     }
 
-    resetSelection() {
+    public resetSelection() {
         console.log('Iniciando resetar seleção');
         Array.from(
             this.containerCalendarDatesElm.children
@@ -348,7 +348,7 @@ export default class HemeraCalendar {
         });
     }
 
-    isMobileDevice() {
+    private isMobileDevice() {
         const isMobile = {
             Android: function() {
                 return navigator.userAgent.match(/Android/i);
@@ -372,13 +372,13 @@ export default class HemeraCalendar {
         );
     }
 
-    show() {
+    public show() {
         console.log('show element');
         this.containerElm.removeAttribute('close');
         this.containerElm.setAttribute('open', '');
     }
 
-    hide() {
+    public hide() {
         console.log('hide element');
         this.containerElm.removeAttribute('open');
         this.containerElm.setAttribute('close', '');
@@ -389,16 +389,17 @@ export default class HemeraCalendar {
         this.insertDatesInScreen();
     }
 
-    toggle() {
+    public toggle() {
         console.log('toggle element', this.containerElm.hasAttribute('open'));
         if (this.containerElm.hasAttribute('open')) this.hide();
         else this.show();
     }
 
-    hideDatesArea() {
-        const onAnimationEnd = (event) => {
+    public hideDatesArea() {
+        const onAnimationEnd = (event: AnimationEvent) => {
             console.log('animação de fechar o calendario acabou');
-            event.target.removeAttribute('close');
+            const element = event.target as HTMLElement;
+            element.removeAttribute('close');
         };
 
         this.isDatesView = false;
@@ -419,7 +420,7 @@ export default class HemeraCalendar {
         this.containerCalendarActionButtonsElm.addEventListener('animationend', onAnimationEnd, { once: true});
     }
 
-    showDatesArea() {
+    public showDatesArea() {
         this.setMonthYearToCurrent();
 
         this.isDatesView = true;
@@ -434,7 +435,7 @@ export default class HemeraCalendar {
         this.containerCalendarActionButtonsElm.removeAttribute('close');
     }
 
-    toggleDatesArea() {
+    public toggleDatesArea() {
         if (this.containerCalendarDatesElm.hasAttribute('open')) {
             this.hideDatesArea();
             console.log('fechando calendário');
@@ -445,21 +446,21 @@ export default class HemeraCalendar {
         }
     }
 
-    showMonthsArea() {
-        this.setYearMonth(this.calendarEngine.currentMonthYear.year);
+    public showMonthsArea() {
+        this.setYearMonth(`${this.calendarEngine.currentMonthYear.year}`);
         this.containerCalendarMonthYearElm.setAttribute('open', '');
         this.containerCalendarMonthYearElm.removeAttribute('close');
     }
 
-    hideMonthsArea() {
-        const onAnimationEnd = (event) => {
+    public hideMonthsArea() {
+        const onAnimationEnd = (event: AnimationEvent) => {
             console.log('animação de abrir o calendario acabou');
-            event.target.removeAttribute('close');
+            (event.target as HTMLElement).removeAttribute('close');
             this.showDatesArea();
         };
 
         this.containerCalendarMonthYearElm.setAttribute('close', '');
-        this.containerCalendarMonthYearElm.removeAttribute('open', '');
+        this.containerCalendarMonthYearElm.removeAttribute('open');
         this.containerCalendarMonthYearElm.addEventListener('animationend', onAnimationEnd, { once: true});
     }
 }
