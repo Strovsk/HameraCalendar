@@ -30,7 +30,8 @@
     // "moduleResolution": "node10",                     /* Specify how TypeScript looks up a file from a given module specifier. */
     "baseUrl": "src/HemerasCalendar/ts",                                  /* Specify the base directory to resolve non-relative module names. */
     "paths": {
-        "*": ["src/HemeraCalendar/ts/types", "./node_modules/@types", "*"]
+        "*": ["./types", "../node_modules/@types", "*"],
+        "@/*": ["./*"]
     },                                      /* Specify a set of entries that re-map imports to additional lookup locations. */
     // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
     "typeRoots": ["node_modules/@types", "src/HemerasCalendar/ts/types"],                                  /* Specify multiple folders that act like './node_modules/@types'. */

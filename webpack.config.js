@@ -13,7 +13,9 @@ module.exports = {
     ]
   },
   resolve: {
-    preferRelative: true,
+    alias: {
+      '@': path.resolve(__dirname, 'src/HemerasCalendar/ts')
+    },
     extensions: ['.ts', '.js']
   },
   devtool: 'inline-source-map',
