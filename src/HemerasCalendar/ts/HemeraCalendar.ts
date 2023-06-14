@@ -1,6 +1,7 @@
-import { Config } from 'config';
-import HemeraCalendarEngine from 'HemeraCalendarEngine';
-import { objectExtends } from 'utils/objectExtends';
+import { Config } from '@/config';
+import HemeraCalendarEngine from '@/HemeraCalendarEngine';
+import { objectExtends } from '@/utils/objectExtends';
+import { monthsOptions } from 'helpers/languages';
 
 export default class HemeraCalendar {
     public options: AppOptions = Config.appOptions;
@@ -89,7 +90,7 @@ export default class HemeraCalendar {
         this.buttonsContainerYearMonthElm.appendChild(this.prevYearMonthElm);
         this.buttonsContainerYearMonthElm.appendChild(this.nextYearMonthElm);
 
-        this.calendarEngine.getWeekDays().forEach((weekday) => {
+        this.calendarEngine.getWeekDays().forEach((weekday: Weekday) => {
             const weekDayElm = document.createElement('h3');
             weekDayElm.innerText = weekday;
             this.containerCalendarDays.appendChild(weekDayElm);
@@ -226,13 +227,16 @@ export default class HemeraCalendar {
     }
 
     public insertMonthsInScreen() {
-        this.calendarEngine.monthsOptions[this.options.language].forEach((monthName, index) => {
-            const monthElm = document.createElement('div');
-            monthElm.addEventListener('click', () => {
-                this.calendarEngine.month = index;
-                this.insertDatesInScreen();
-                this.toggleDatesArea();
-            });
+        const language = this.options.language as keyof typeof monthsOptions;
+        this.calendarEngine.monthsOptions[language].forEach(
+            (monthName: MonthNameObject, index: number) => {
+                const monthElm = document.createElement('div');
+                monthElm.addEventListener('click', () => {
+                    this.calendarEngine.month = index;
+                    this.insertDatesInScreen();
+                    this.toggleDatesArea();
+            }
+        );
             monthElm.innerText = monthName.short;
             this.containerCalendarMonthYearElm.appendChild(monthElm);
         });

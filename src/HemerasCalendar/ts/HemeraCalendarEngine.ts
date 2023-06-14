@@ -1,6 +1,7 @@
-import { objectExtends } from 'utils/objectExtends';
-import { shortWeekDaysOptions, monthsOptions } from 'helpers/languages';
-import { Config } from 'config';
+import { objectExtends } from '@/utils/objectExtends';
+import { shortWeekDaysOptions, monthsOptions } from '@/helpers/languages';
+import { Config } from '@/config';
+import { Month, DateSelectionOption } from '@/types/enum';
 
 export default class HemeraCalendarEngine {
     public options: AppOptions = Config.appOptions;
@@ -63,8 +64,9 @@ export default class HemeraCalendarEngine {
         const numberOfDays = new Date(year, monthNumber + 1, 0).getDate();
         const monthInfo = new Date(year, monthNumber, 1);
         const startWeekDay = monthInfo.getDay();
-        const monthName = this.monthsOptions[this.options.language][monthNumber].expanded;
-        const weekdayName = this.shortWeekDaysOptions[this.options.language][startWeekDay];
+        const language = this.options.language as keyof typeof monthsOptions;
+        const monthName = this.monthsOptions[language][monthNumber].expanded;
+        const weekdayName = this.shortWeekDaysOptions[language][startWeekDay];
 
         const lastMonth = new Date(year, monthNumber - 1, 1);
         const nextMonth = new Date(year, monthNumber + 1, 1);
@@ -235,8 +237,9 @@ export default class HemeraCalendarEngine {
     }
 
     public getCurrentMonthName(monthNumber = undefined) {
-        if (!monthNumber) return this.monthsOptions[this.options.language][this.currentMonthYear.month];
-        return this.monthsOptions[this.options.language][monthNumber];
+        const language = this.options.language as keyof typeof monthsOptions;
+        if (!monthNumber) return this.monthsOptions[language][this.currentMonthYear.month];
+        return this.monthsOptions[language][monthNumber];
     }
 
     public getCurrentYear(): Year {
@@ -244,9 +247,10 @@ export default class HemeraCalendarEngine {
         return this.currentMonthYear.year;
     }
 
-    public getWeekDays() {
+    public getWeekDays(): string[] {
         // TODO transform it in a getter
-        return this.shortWeekDaysOptions[this.options.language];
+        const language = this.options.language as keyof typeof monthsOptions;
+        return this.shortWeekDaysOptions[language];
     }
 
     public isSubSelectingRangeMode(): boolean {

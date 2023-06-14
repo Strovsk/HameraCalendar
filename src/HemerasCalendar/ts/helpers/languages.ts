@@ -1,3 +1,5 @@
+import { Languages } from "@/types/enum";
+
 const shortWeekDaysOptions = {
     [Languages.BR]: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'],
     [Languages.US]: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],

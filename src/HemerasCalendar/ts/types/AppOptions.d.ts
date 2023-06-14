@@ -15,12 +15,6 @@ declare type AppSelectedDateObject = {
     target?: HTMLEvent.target;
 };
 
-enum DateSelectionOption {
-    one='one',
-    multiple='multiple',
-    range='range',
-};
-
 declare type AppOptions = {
     language: Languages;
     stayOnTop: boolean;

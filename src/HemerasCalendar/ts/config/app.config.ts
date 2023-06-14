@@ -1,3 +1,5 @@
+import { Languages, DateSelectionOption } from "@/types/enum";
+
 const options: AppOptions = {
     language: Languages.BR,
     stayOnTop: false,
