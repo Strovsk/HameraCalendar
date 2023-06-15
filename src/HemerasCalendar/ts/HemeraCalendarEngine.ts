@@ -3,7 +3,7 @@ import { shortWeekDaysOptions, monthsOptions } from '@/helpers/languages';
 import { Config } from '@/config';
 import { Month, DateSelectionOption } from '@/types/enum';
 
-export default class HemeraCalendarEngine {
+export class HemeraCalendarEngine {
     public options: AppOptions = Config.appOptions;
     public today: Date = new Date();
     public currentMonthYear = {

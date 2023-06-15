@@ -1,9 +1,9 @@
 import { Config } from '@/config';
-import HemeraCalendarEngine from '@/HemeraCalendarEngine';
+import { HemeraCalendarEngine } from '@/HemeraCalendarEngine';
 import { objectExtends } from '@/utils/objectExtends';
-import { monthsOptions } from 'helpers/languages';
+import { monthsOptions } from '@/helpers/languages';
 
-export default class HemeraCalendar {
+export class HemeraCalendar {
     public options: AppOptions = Config.appOptions;
     public isDatesView: boolean = true;
     public calendarEngine: HemeraCalendarEngine;
