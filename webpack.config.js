@@ -1,7 +1,16 @@
 const path = require('node:path')
 
 module.exports = {
-  entry: './HemeraCalendar.ts',
+  entry: './main.ts',
+  output: {
+    filename: 'HemeraCalendar.js',
+    path: path.resolve(__dirname, 'dist'),
+    clean: true,
+    library: {
+      name: 'HemeraObject',
+      type: 'var'
+    }
+  },
   context: path.resolve(__dirname, 'src/HemerasCalendar/ts'),
   module: {
     rules: [
@@ -19,9 +28,5 @@ module.exports = {
     extensions: ['.ts', '.js']
   },
   devtool: 'inline-source-map',
-  output: {
-    filename: 'HemeraCalendar.js',
-    path: path.resolve(__dirname, 'dist')
-  },
   mode: 'development'
 }
