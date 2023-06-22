@@ -2,18 +2,16 @@ import { Config } from '@/config';
 import { HemeraCalendarEngine } from '@/HemeraCalendarEngine';
 import { objectExtends } from '@/utils/objectExtends';
 import { monthsOptions } from '@/helpers/languages';
+import { CalendarHeader } from '@/components/CalendarHeader';
 
 export class HemeraCalendar {
     public options: AppOptions = Config.appOptions;
     public isDatesView: boolean = true;
     public calendarEngine: HemeraCalendarEngine;
 
+    public calendarHeaderElm: CalendarHeader = new CalendarHeader();
+
     public containerElm: HTMLElement = document.createElement('div');
-    public containerYearMonthElm: HTMLElement = document.createElement('div');
-    public buttonsContainerYearMonthElm: HTMLElement = document.createElement('div');
-    public yearMonthElm: HTMLElement = document.createElement('button');
-    public prevYearMonthElm: HTMLElement = document.createElement('button');
-    public nextYearMonthElm: HTMLElement = document.createElement('button');
     public containerCalendarDays: HTMLElement = document.createElement('div');
     public containerCalendarDatesElm: HTMLElement = document.createElement('div');
 
@@ -75,7 +73,7 @@ export class HemeraCalendar {
         this.containerCalendarDays.setAttribute('open', '');
         // this.containerCalendarMonthYearElm.setAttribute('close', '');
 
-        this.containerElm.appendChild(this.containerYearMonthElm);
+        this.containerElm.appendChild(this.calendarHeaderElm.container);
         this.containerElm.appendChild(this.containerCalendarDays);
         this.containerElm.appendChild(this.containerCalendarDatesElm);
         this.containerElm.appendChild(this.containerCalendarMonthYearElm);
@@ -83,19 +81,13 @@ export class HemeraCalendar {
         if (!this.mustShowActionButtons())
             this.containerElm.appendChild(this.containerCalendarActionButtonsElm);
 
-        this.containerYearMonthElm.appendChild(this.yearMonthElm);
-        this.containerYearMonthElm.appendChild(
-            this.buttonsContainerYearMonthElm
-        );
-        this.buttonsContainerYearMonthElm.appendChild(this.prevYearMonthElm);
-        this.buttonsContainerYearMonthElm.appendChild(this.nextYearMonthElm);
-
         this.calendarEngine.getWeekDays().forEach((weekday: Weekday) => {
             const weekDayElm = document.createElement('h3');
             weekDayElm.innerText = weekday;
             this.containerCalendarDays.appendChild(weekDayElm);
         });
-        this.yearMonthElm.innerText = `${this.calendarEngine.getCurrentMonthName().expanded} ${this.calendarEngine.getCurrentYear()}`;
+
+        this.calendarHeaderElm.labelElm.text = `${this.calendarEngine.getCurrentMonthName().expanded} ${this.calendarEngine.getCurrentYear()}`;
 
         this.containerCalendarActionButtonsElm.setAttribute('open', '');
         this.containerCalendarActionButtonsElm.appendChild(this.actionCancelButtonElm);
@@ -105,18 +97,6 @@ export class HemeraCalendar {
     private loadElementStyles(): void {
         this.containerElm.classList.add('Calendar');
         if (this.options.stayOnTop) this.show();
-
-        this.containerYearMonthElm.classList.add('CalendarYearMonthController');
-        this.buttonsContainerYearMonthElm.classList.add('CalendarYearMonthController-buttonContainer');
-        this.prevYearMonthElm.classList.add(
-            'CalendarYearMonthController-button',
-            '--previous'
-        );
-        this.nextYearMonthElm.classList.add(
-            'CalendarYearMonthController-button',
-            '--next'
-        );
-        this.yearMonthElm.classList.add('CalendarMonthYear');
 
         this.containerCalendarDays.classList.add('CalendarDays');
         this.containerCalendarDatesElm.classList.add('CalendarDates');
@@ -136,17 +116,17 @@ export class HemeraCalendar {
         this.containerCalendarDatesElm.addEventListener('mouseleave', resetDaySelection);
         this.containerElm.addEventListener('mouseleave', resetDaySelection);
 
-        this.yearMonthElm.addEventListener('click', () => {
+        this.calendarHeaderElm.labelElm.container.addEventListener('click', () => {
             this.toggleDatesArea();
             console.log('clicado');
         });
 
-        this.nextYearMonthElm.addEventListener('click', () => {
+        this.calendarHeaderElm.controllerElm.nextYearMonthElm.addEventListener('click', () => {
             if (this.isDatesView)
                 this.monthController(1, 'add');
             else this.yearController(1, 'add');
         });
-        this.prevYearMonthElm.addEventListener('click', () => {
+        this.calendarHeaderElm.controllerElm.prevYearMonthElm.addEventListener('click', () => {
             if (this.isDatesView)
                 this.monthController(1, 'remove');
             else this.yearController(1, 'remove');
@@ -186,17 +166,6 @@ export class HemeraCalendar {
         document.body.appendChild(this.containerElm);
     }
 
-    public setYearMonth(text: string) {
-        // TODO transform it in a getter
-        // REFACTOR subsitute all this.yearmonthElm.innerText for this function
-        this.yearMonthElm.innerText = text;
-    }
-
-    public setMonthYearToCurrent() {
-        // TODO transform it in a setter
-        this.yearMonthElm.innerText = `${this.calendarEngine.getCurrentMonthName().expanded} ${this.calendarEngine.getCurrentYear()}`;
-    }
-
     public monthController(monthQtd = 1, option: keyof MonthContollerOptions = 'add') {
         const options: MonthContollerOptions = {
             add: () => this.calendarEngine.addMonth(monthQtd),
@@ -208,7 +177,7 @@ export class HemeraCalendar {
         const monthName = this.calendarEngine.getCurrentMonthName().expanded;
         const year = this.calendarEngine.getCurrentYear()
 
-        this.yearMonthElm.innerText = `${monthName} ${year}`;
+        this.calendarHeaderElm.labelElm.text = `${monthName} ${year}`;
         this.insertDatesInScreen();
     }
 
@@ -222,7 +191,7 @@ export class HemeraCalendar {
 
         const year = this.calendarEngine.getCurrentYear()
 
-        this.yearMonthElm.innerText = `${year}`;
+        this.calendarHeaderElm.labelElm.text = `${year}`;
         this.insertDatesInScreen();
     }
 
@@ -425,7 +394,7 @@ export class HemeraCalendar {
     }
 
     public showDatesArea() {
-        this.setMonthYearToCurrent();
+        this.calendarHeaderElm.labelElm.text = `${this.calendarEngine.getCurrentMonthName().expanded} ${this.calendarEngine.getCurrentYear()}`;
 
         this.isDatesView = true;
 
@@ -451,7 +420,7 @@ export class HemeraCalendar {
     }
 
     public showMonthsArea() {
-        this.setYearMonth(`${this.calendarEngine.currentMonthYear.year}`);
+        this.calendarHeaderElm.labelElm.text = `${this.calendarEngine.currentMonthYear.year}`;
         this.containerCalendarMonthYearElm.setAttribute('open', '');
         this.containerCalendarMonthYearElm.removeAttribute('close');
     }
