@@ -3,6 +3,7 @@ import { HemeraCalendarEngine } from '@/HemeraCalendarEngine';
 import { objectExtends } from '@/utils/objectExtends';
 import { monthsOptions } from '@/helpers/languages';
 import { CalendarHeader } from '@/components/CalendarHeader';
+import { CalendarDays } from '@/components/CalendarDays';
 
 export class HemeraCalendar {
     public options: AppOptions = Config.appOptions;
@@ -10,9 +11,9 @@ export class HemeraCalendar {
     public calendarEngine: HemeraCalendarEngine;
 
     public calendarHeaderElm: CalendarHeader = new CalendarHeader();
+    public calendarDays: CalendarDays = new CalendarDays();
 
     public containerElm: HTMLElement = document.createElement('div');
-    public containerCalendarDays: HTMLElement = document.createElement('div');
     public containerCalendarDatesElm: HTMLElement = document.createElement('div');
 
     public containerCalendarMonthYearElm: HTMLElement = document.createElement('div');
@@ -70,22 +71,20 @@ export class HemeraCalendar {
         this.containerElm.style.left = containerPos.x + 'px';
 
         this.containerCalendarDatesElm.setAttribute('open', '');
-        this.containerCalendarDays.setAttribute('open', '');
+        this.calendarDays.open();
         // this.containerCalendarMonthYearElm.setAttribute('close', '');
 
         this.containerElm.appendChild(this.calendarHeaderElm.container);
-        this.containerElm.appendChild(this.containerCalendarDays);
+        this.containerElm.appendChild(this.calendarDays.container);
         this.containerElm.appendChild(this.containerCalendarDatesElm);
         this.containerElm.appendChild(this.containerCalendarMonthYearElm);
 
         if (!this.mustShowActionButtons())
             this.containerElm.appendChild(this.containerCalendarActionButtonsElm);
 
-        this.calendarEngine.getWeekDays().forEach((weekday: Weekday) => {
-            const weekDayElm = document.createElement('h3');
-            weekDayElm.innerText = weekday;
-            this.containerCalendarDays.appendChild(weekDayElm);
-        });
+        this.calendarDays.updateWeekDays(
+            this.calendarEngine.getWeekDays(),
+        );
 
         this.calendarHeaderElm.labelElm.text = `${this.calendarEngine.getCurrentMonthName().expanded} ${this.calendarEngine.getCurrentYear()}`;
 
@@ -98,7 +97,6 @@ export class HemeraCalendar {
         this.containerElm.classList.add('Calendar');
         if (this.options.stayOnTop) this.show();
 
-        this.containerCalendarDays.classList.add('CalendarDays');
         this.containerCalendarDatesElm.classList.add('CalendarDates');
 
         this.containerCalendarMonthYearElm.classList.add('CalendarMonthSelection');
@@ -384,9 +382,8 @@ export class HemeraCalendar {
             this.showMonthsArea();
         }, { once: true});
         
-        this.containerCalendarDays.setAttribute('close', '');
-        this.containerCalendarDays.removeAttribute('open');
-        this.containerCalendarDays.addEventListener('animationend', onAnimationEnd, { once: true});
+        this.calendarDays.close();
+        this.calendarDays.container.addEventListener('animationend', onAnimationEnd, { once: true});
         
         this.containerCalendarActionButtonsElm.setAttribute('close', '');
         this.containerCalendarActionButtonsElm.removeAttribute('open');
@@ -401,8 +398,7 @@ export class HemeraCalendar {
         this.containerCalendarDatesElm.removeAttribute('close');
         this.containerCalendarDatesElm.setAttribute('open', '');
 
-        this.containerCalendarDays.removeAttribute('close');
-        this.containerCalendarDays.setAttribute('open', '');
+        this.calendarDays.open();
 
         this.containerCalendarActionButtonsElm.setAttribute('open', '');
         this.containerCalendarActionButtonsElm.removeAttribute('close');
