@@ -5,6 +5,7 @@ import { monthsOptions } from '@/helpers/languages';
 import { CalendarHeader } from '@/components/CalendarHeader';
 import { CalendarDays } from '@/components/CalendarDays';
 import { CalendarDates } from '@/components/CalendarDates';
+import isMobileDevice from '@/utils/isMobileDevice';
 
 export class HemeraCalendar {
     public options: AppOptions = Config.appOptions;
@@ -273,28 +274,6 @@ export class HemeraCalendar {
     public resetRange() {
         console.log('Executando reset de range');
         if (this.calendarEngine.isRangeDefined()) return;
-    private isMobileDevice() {
-        const isMobile = {
-            Android: function() {
-                return navigator.userAgent.match(/Android/i);
-            },
-            BlackBerry: function() {
-                return navigator.userAgent.match(/BlackBerry/i);
-            },
-            iOS: function() {
-                return navigator.userAgent.match(/iPhone|iPad|iPod/i);
-            },
-            Opera: function() {
-                return navigator.userAgent.match(/Opera Mini/i);
-            },
-            Windows: function() {
-                return navigator.userAgent.match(/IEMobile/i) || navigator.userAgent.match(/WPDesktop/i);
-            },
-        };
-
-        return (
-            isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows()
-        );
         this.calendarDates.resetSubselections();
     }
 
