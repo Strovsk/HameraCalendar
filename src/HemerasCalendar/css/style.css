@@ -58,6 +58,7 @@
     align-items: center;
     justify-items: center;
     display: none;
+    grid-row: span 2;
 }
 
 .CalendarDays[open] {
