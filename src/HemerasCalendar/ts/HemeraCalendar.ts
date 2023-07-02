@@ -4,6 +4,7 @@ import { objectExtends } from '@/utils/objectExtends';
 import { monthsOptions } from '@/helpers/languages';
 import { CalendarHeader } from '@/components/CalendarHeader';
 import { CalendarDays } from '@/components/CalendarDays';
+import { CalendarDates } from '@/components/CalendarDates';
 
 export class HemeraCalendar {
     public options: AppOptions = Config.appOptions;
@@ -12,9 +13,9 @@ export class HemeraCalendar {
 
     public calendarHeaderElm: CalendarHeader = new CalendarHeader();
     public calendarDays: CalendarDays = new CalendarDays();
+    public calendarDates: CalendarDates = new CalendarDates();
 
     public containerElm: HTMLElement = document.createElement('div');
-    public containerCalendarDatesElm: HTMLElement = document.createElement('div');
 
     public containerCalendarMonthYearElm: HTMLElement = document.createElement('div');
 
@@ -70,13 +71,13 @@ export class HemeraCalendar {
         this.containerElm.style.top = containerPos.y + 'px';
         this.containerElm.style.left = containerPos.x + 'px';
 
-        this.containerCalendarDatesElm.setAttribute('open', '');
+        this.calendarDates.open();
         this.calendarDays.open();
         // this.containerCalendarMonthYearElm.setAttribute('close', '');
 
         this.containerElm.appendChild(this.calendarHeaderElm.container);
         this.containerElm.appendChild(this.calendarDays.container);
-        this.containerElm.appendChild(this.containerCalendarDatesElm);
+        this.containerElm.appendChild(this.calendarDates.container);
         this.containerElm.appendChild(this.containerCalendarMonthYearElm);
 
         if (!this.mustShowActionButtons())
@@ -97,8 +98,6 @@ export class HemeraCalendar {
         this.containerElm.classList.add('Calendar');
         if (this.options.stayOnTop) this.show();
 
-        this.containerCalendarDatesElm.classList.add('CalendarDates');
-
         this.containerCalendarMonthYearElm.classList.add('CalendarMonthSelection');
         this.containerCalendarActionButtonsElm.classList.add('CalendarActionContainer');
 
@@ -108,10 +107,10 @@ export class HemeraCalendar {
 
     private loadEvents(): void {
         const resetDaySelection = () => {
-            if (!this.calendarEngine.isRangeDefined()) this.resetRange();
+            if (!this.calendarEngine.isRangeDefined()) this.calendarDates.resetSubselections();
         };
 
-        this.containerCalendarDatesElm.addEventListener('mouseleave', resetDaySelection);
+        this.calendarDates.container.addEventListener('mouseleave', resetDaySelection);
         this.containerElm.addEventListener('mouseleave', resetDaySelection);
 
         this.calendarHeaderElm.labelElm.container.addEventListener('click', () => {
@@ -210,8 +209,6 @@ export class HemeraCalendar {
     }
 
     public insertDatesInScreen() {
-        this.containerCalendarDatesElm.innerHTML = '';
-
         const dateClickEvent = (event: MouseEvent) => {
             if (!event.target) return;
             const targetElement = event.target as HTMLElement;
@@ -220,10 +217,10 @@ export class HemeraCalendar {
             const year = parseInt(targetElement.getAttribute('year') as string, 10);
             const date = parseInt(targetElement.innerText, 10);
 
-            if (this.calendarEngine.mustResetSelection()) this.resetSelection();
+            if (this.calendarEngine.mustResetSelection()) this.calendarDates.resetSelections();
             const isSelected = this.calendarEngine.toggleDateSelection(year, month, date);
             if (isSelected) {
-                targetElement.classList.add('--selected');
+                targetElement.classList.add('--selected'); // REFACTOR to object dateNode instance
                 if (this.options.onSelect) {
                     this.options.onSelect({
                         year, month, date,
@@ -236,7 +233,7 @@ export class HemeraCalendar {
             }
             else {
                 targetElement.classList.remove('--selected');
-                if (this.isMobileDevice()) this.resetRange();
+                if (isMobileDevice()) this.calendarDates.resetSubselections();
             };
 
             if (this.calendarEngine.mustClose()) setTimeout(() => this.hide(), 300);
@@ -254,71 +251,28 @@ export class HemeraCalendar {
             this.selectRange(year, month, date);
         };
 
-        this.calendarEngine.getArrayDate().forEach((dateObj, index) => {
-            const dateElm = document.createElement('div');
-            dateElm.innerText = String(dateObj.date);
-            dateElm.classList.add('calendarDate');
-            dateElm.addEventListener('click', dateClickEvent);
-            dateElm.addEventListener('mouseenter', dateMouseHoverEvent);
-            dateElm.setAttribute('index', String(index));
-            dateElm.setAttribute('date', String(dateObj.date));
-            dateElm.setAttribute('month', String(dateObj.month));
-            dateElm.setAttribute('year', String(dateObj.year));
-
-            if (dateObj.isAnotherMonth)
-                dateElm.classList.add('--anotherMonth');
-
-            if (dateObj.isSelected)
-                dateElm.classList.add('--selected');
-
-            if (dateObj.isToday)
-                dateElm.classList.add('--today');
-
-            if (dateObj.isSubSelected)
-                dateElm.classList.add('--sub-selected');
-
-            this.containerCalendarDatesElm.appendChild(dateElm);
-        });
+        this.calendarDates.updateDates(this.calendarEngine.getArrayDate());
+        this.calendarDates.dateNodeClickEvent.push(dateClickEvent as EventListenerOrEventListenerObject);
+        this.calendarDates.dateNodeHoverEvent.push(dateMouseHoverEvent as EventListenerOrEventListenerObject);
     }
 
     public selectRange(limitYear: Year, limitMonth: Month, limitDate: MonthDate) {
-        Array.from(
-            this.containerCalendarDatesElm.children
-        ).forEach((dateElm) => {
-            const toCompareMonth = parseInt(dateElm.getAttribute('month') as string, 10);
-            const toCompareYear = parseInt(dateElm.getAttribute('year') as string, 10);
-            const toCompareDate = parseInt((dateElm as HTMLElement).innerText, 10);
-
-            const toCompare = { date: toCompareDate, month: toCompareMonth, year: toCompareYear };
+        this.calendarDates.dateNodes.forEach((dateObj) => {
+            const toCompare = {
+                date: dateObj.date,
+                month: dateObj.month,
+                year: dateObj.year,
+            };
             const comparisonLimit = { date: limitDate, month: limitMonth, year: limitYear };
 
-            if (this.calendarEngine.isDateSubSelectingRangeMode(toCompare, comparisonLimit))
-                dateElm.classList.add('--sub-selected');
-            else
-                dateElm.classList.remove('--sub-selected');
+            dateObj.enableSubSelectedStyle = this.calendarEngine
+                .isDateSubSelectingRangeMode(toCompare, comparisonLimit);
         });
     };
     
     public resetRange() {
         console.log('Executando reset de range');
         if (this.calendarEngine.isRangeDefined()) return;
-        Array.from(
-            this.containerCalendarDatesElm.children
-        ).forEach((dateElm) => {
-            dateElm.classList.remove('--sub-selected');
-        });
-    }
-
-    public resetSelection() {
-        console.log('Iniciando resetar seleção');
-        Array.from(
-            this.containerCalendarDatesElm.children
-        ).forEach((dateElm) => {
-            if (dateElm.classList.contains('--selected'))
-                dateElm.classList.remove('--selected');
-        });
-    }
-
     private isMobileDevice() {
         const isMobile = {
             Android: function() {
@@ -341,6 +295,7 @@ export class HemeraCalendar {
         return (
             isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows()
         );
+        this.calendarDates.resetSubselections();
     }
 
     public show() {
@@ -375,9 +330,8 @@ export class HemeraCalendar {
 
         this.isDatesView = false;
 
-        this.containerCalendarDatesElm.setAttribute('close', '');
-        this.containerCalendarDatesElm.removeAttribute('open');
-        this.containerCalendarDatesElm.addEventListener('animationend', (event) => {
+        this.calendarDates.close();
+        this.calendarDates.container.addEventListener('animationend', (event) => {
             onAnimationEnd(event);
             this.showMonthsArea();
         }, { once: true});
@@ -395,9 +349,7 @@ export class HemeraCalendar {
 
         this.isDatesView = true;
 
-        this.containerCalendarDatesElm.removeAttribute('close');
-        this.containerCalendarDatesElm.setAttribute('open', '');
-
+        this.calendarDates.open();
         this.calendarDays.open();
 
         this.containerCalendarActionButtonsElm.setAttribute('open', '');
@@ -405,7 +357,7 @@ export class HemeraCalendar {
     }
 
     public toggleDatesArea() {
-        if (this.containerCalendarDatesElm.hasAttribute('open')) {
+        if (this.calendarDates.isOpen()) {
             this.hideDatesArea();
             console.log('fechando calendário');
         }
