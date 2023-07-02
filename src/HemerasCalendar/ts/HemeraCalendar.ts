@@ -5,6 +5,7 @@ import { monthsOptions } from '@/helpers/languages';
 import { CalendarHeader } from '@/components/CalendarHeader';
 import { CalendarDays } from '@/components/CalendarDays';
 import { CalendarDates } from '@/components/CalendarDates';
+import { CalendarActionBar } from '@/components/CalendarActionBar';
 import isMobileDevice from '@/utils/isMobileDevice';
 
 export class HemeraCalendar {
@@ -15,14 +16,11 @@ export class HemeraCalendar {
     public calendarHeaderElm: CalendarHeader = new CalendarHeader();
     public calendarDays: CalendarDays = new CalendarDays();
     public calendarDates: CalendarDates = new CalendarDates();
+    public calendarActionBar: CalendarActionBar = new CalendarActionBar();
 
     public containerElm: HTMLElement = document.createElement('div');
 
     public containerCalendarMonthYearElm: HTMLElement = document.createElement('div');
-
-    public containerCalendarActionButtonsElm: HTMLElement = document.createElement('div');
-    public actionOkButtonElm: HTMLElement = document.createElement('button');
-    public actionCancelButtonElm: HTMLElement = document.createElement('button');
 
     containerDefaultWidth: pixel = 450;
 
@@ -81,8 +79,8 @@ export class HemeraCalendar {
         this.containerElm.appendChild(this.calendarDates.container);
         this.containerElm.appendChild(this.containerCalendarMonthYearElm);
 
-        if (!this.mustShowActionButtons())
-            this.containerElm.appendChild(this.containerCalendarActionButtonsElm);
+        if (this.mustShowActionButtons())
+            this.containerElm.appendChild(this.calendarActionBar.container);
 
         this.calendarDays.updateWeekDays(
             this.calendarEngine.getWeekDays(),
@@ -90,9 +88,7 @@ export class HemeraCalendar {
 
         this.calendarHeaderElm.labelElm.text = `${this.calendarEngine.getCurrentMonthName().expanded} ${this.calendarEngine.getCurrentYear()}`;
 
-        this.containerCalendarActionButtonsElm.setAttribute('open', '');
-        this.containerCalendarActionButtonsElm.appendChild(this.actionCancelButtonElm);
-        this.containerCalendarActionButtonsElm.appendChild(this.actionOkButtonElm);
+        this.calendarActionBar.open();
     }
 
     private loadElementStyles(): void {
@@ -100,10 +96,6 @@ export class HemeraCalendar {
         if (this.options.stayOnTop) this.show();
 
         this.containerCalendarMonthYearElm.classList.add('CalendarMonthSelection');
-        this.containerCalendarActionButtonsElm.classList.add('CalendarActionContainer');
-
-        this.actionOkButtonElm.innerText = 'Ok';
-        this.actionCancelButtonElm.innerText = 'Cancel';
     }
 
     private loadEvents(): void {
@@ -130,14 +122,14 @@ export class HemeraCalendar {
             else this.yearController(1, 'remove');
         });
 
-        this.actionOkButtonElm.addEventListener('click', (event) => {
+        this.calendarActionBar.okButton.container.addEventListener('click', (event) => {
             if (!this.options.onConfirm) throw new Error('On confirm function not defined');
 
             this.options.onConfirm(this.calendarEngine.selections, event);
             this.hide();
         });
 
-        this.actionCancelButtonElm.addEventListener('click', (event) => {
+        this.calendarActionBar.cancelButton.container.addEventListener('click', (event) => {
             if (!this.options.onCancel) throw new Error('On cancel function not defined');
 
             this.options.onCancel(this.calendarEngine.selections, event);
@@ -156,8 +148,8 @@ export class HemeraCalendar {
         if (this.options.init) this.init();
     }
 
-    public mustShowActionButtons() {
-        return this.options.closeAfterSelect || !this.options.stayOnTop;
+    public mustShowActionButtons(): boolean {
+        return this.options.showActionButtons;
     }
 
     public init() {
@@ -318,9 +310,10 @@ export class HemeraCalendar {
         this.calendarDays.close();
         this.calendarDays.container.addEventListener('animationend', onAnimationEnd, { once: true});
         
-        this.containerCalendarActionButtonsElm.setAttribute('close', '');
-        this.containerCalendarActionButtonsElm.removeAttribute('open');
-        this.containerCalendarActionButtonsElm.addEventListener('animationend', onAnimationEnd, { once: true});
+        this.calendarActionBar.close();
+        this.calendarActionBar.container.addEventListener(
+            'animationend', onAnimationEnd, { once: true}
+        );
     }
 
     public showDatesArea() {
@@ -331,8 +324,7 @@ export class HemeraCalendar {
         this.calendarDates.open();
         this.calendarDays.open();
 
-        this.containerCalendarActionButtonsElm.setAttribute('open', '');
-        this.containerCalendarActionButtonsElm.removeAttribute('close');
+        this.calendarActionBar.open();
     }
 
     public toggleDatesArea() {
