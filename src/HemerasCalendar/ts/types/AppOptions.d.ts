@@ -18,6 +18,7 @@ declare type AppSelectedDateObject = {
 declare type AppOptions = {
     language: Languages;
     stayOnTop: boolean;
+    showActionButtons: boolean;
     container: string | undefined;
     pos: AppPosition | undefined;
     selectionType: DateSelectionOption;

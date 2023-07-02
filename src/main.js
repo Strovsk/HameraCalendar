@@ -1,8 +1,9 @@
 const calendar = new HemeraCalendar({
     // pos: { x: center, y: 50 },
     container: '#openDateSelector',
+    showActionButtons: false,
     stayOnTop: true,
-    closeAfterSelect: false,
+    // closeAfterSelect: false,
     // selectionType: '1',
     // onSelect: (selections) => {},
     // onConfirmation: (selctions) => {},
