@@ -1,4 +1,6 @@
 export default interface IEngine {
+    get appOptions(): AppOptions;
+    
     getWeekDays(): string[];
     getCurrentYear(): Year;
     resetSelections(): void;

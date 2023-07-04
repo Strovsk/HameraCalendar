@@ -19,7 +19,11 @@ export class HemeraCalendarEngine implements IEngine {
         this.options = objectExtends(this.options, options) as AppOptions;
     }
 
-    public set month(month: Month) {
+    get appOptions(): AppOptions {
+        return this.options;
+    }
+
+    set month(month: Month) {
         if (month <= 0 && month >= 11) throw new Error('month must be a number between 0 and 11');
         this.currentMonthYear.month = month;
     }
@@ -40,7 +44,7 @@ export class HemeraCalendarEngine implements IEngine {
         this.currentMonthYear.year = bufferDate.getFullYear();
     }
 
-    public set year(year: Year) {
+    set year(year: Year) {
         if (typeof year !== 'number') return;
         this.currentMonthYear.year = year;
     }
@@ -204,13 +208,13 @@ export class HemeraCalendarEngine implements IEngine {
         );
     }
 
-    isDateInSelection(year: Year, month: Month, date: MonthDate) {
+    public isDateInSelection(year: Year, month: Month, date: MonthDate) {
         return this.selections.some(
             (selectedDate) => selectedDate.year === year && selectedDate.month === month && selectedDate.date === date
         );
     }
 
-    isSubSelectedDate(year: Year, month: Month, date: MonthDate) {
+    public isSubSelectedDate(year: Year, month: Month, date: MonthDate) {
         if (!this.isRangeDefined()) return false;
 
         const checkDate = (dateA: AppSelectedDateObject, dateB: AppSelectedDateObject) => {
