@@ -11,8 +11,6 @@ export default class CalendarDays {
         this.engine = engine;
         this.mediator = mediator;
 
-        this.open();
-
         this.weekdays = this.engine.getWeekDays();
         this.updateWeekDays(this.weekdays);
 
