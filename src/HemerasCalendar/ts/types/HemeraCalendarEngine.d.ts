@@ -13,6 +13,11 @@ declare type MonthInfo = {
     lastMonthNumberOfDays: MonthDays;
 }
 
+declare type MonthNameObject = {
+    short: string;
+    expanded: string;
+}
+
 declare type DateInfo = {
     year: Year,
     month: Month,
