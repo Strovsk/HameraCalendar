@@ -1,13 +1,20 @@
+import { IEngine, IMediator } from "@/interfaces";
+
 export default class CalendarDays {
+    protected engine: IEngine;
+    private mediator: IMediator;
+
     private containerElm: HTMLElement = document.createElement('div');
     public weekdays: Weekday[];
 
-    constructor(weekdays: Weekday[] | undefined = undefined) {
-        this.containerElm.setAttribute('open', '');
+    constructor(engine: IEngine, mediator: IMediator) {
+        this.engine = engine;
+        this.mediator = mediator;
 
-        this.weekdays = weekdays ?? [];
-        if (typeof weekdays === 'object')
-            this.updateWeekDays(weekdays);
+        this.open();
+
+        this.weekdays = this.engine.getWeekDays();
+        this.updateWeekDays(this.weekdays);
 
         this.containerElm.classList.add('CalendarDays');
     }

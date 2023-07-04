@@ -1,3 +1,4 @@
+import { IEngine, IMediator } from "@/interfaces";
 import DateNode from "./DateNode";
 
 export default class CalendarDates {
@@ -6,8 +7,16 @@ export default class CalendarDates {
     public dateNodeHoverEvent: EventListenerOrEventListenerObject[] = [];
     public dateNodes: DateNode[] = [];
 
-    constructor() {
+    protected engine: IEngine;
+    private mediator: IMediator;
+
+    constructor(engine: IEngine, mediator: IMediator) {
+        this.engine = engine;
+        this.mediator = mediator;
+
         this.containerElm.classList.add('CalendarDates');
+
+        this.open();
     }
 
     public open() {
@@ -40,9 +49,9 @@ export default class CalendarDates {
         });
     }
 
-    public updateDates(datesList: DateInfo[]) { // Old insertDatesInScreen
+    public updateDates() { // Old insertDatesInScreen
         this.containerElm.innerHTML = '';
-        datesList.forEach((dateObj, index) => {
+        this.engine.getArrayDate().forEach((dateObj, index) => {
             const dateElm = new DateNode(index, dateObj);
 
             this.dateNodeClickEvent?.forEach(func => {
