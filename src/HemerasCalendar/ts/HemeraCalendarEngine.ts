@@ -2,8 +2,9 @@ import { objectExtends } from '@/utils/objectExtends';
 import { shortWeekDaysOptions, monthsOptions } from '@/helpers/languages';
 import { Config } from '@/config';
 import { Month, DateSelectionOption } from '@/types/enum';
+import { IEngine } from '@/interfaces';
 
-export class HemeraCalendarEngine {
+export class HemeraCalendarEngine implements IEngine {
     public options: AppOptions = Config.appOptions;
     public today: Date = new Date();
     public currentMonthYear = {
@@ -236,10 +237,9 @@ export class HemeraCalendarEngine {
         return this.options.selectionType === DateSelectionOption.range && this.selections.length === 2;
     }
 
-    public getCurrentMonthName(monthNumber = undefined) {
+    public getCurrentMonthName(): MonthNameObject {
         const language = this.options.language as keyof typeof monthsOptions;
-        if (!monthNumber) return this.monthsOptions[language][this.currentMonthYear.month];
-        return this.monthsOptions[language][monthNumber];
+        return this.monthsOptions[language][this.currentMonthYear.month];
     }
 
     public getCurrentYear(): Year {
