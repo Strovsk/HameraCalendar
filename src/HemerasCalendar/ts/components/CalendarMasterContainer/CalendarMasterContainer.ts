@@ -11,7 +11,7 @@ export default class CalendarMasterContainer {
 
         this.containerElm.classList.add('Calendar');
 
-        this.containerElm.addEventListener('mouseleave', this.onMouseLeaveEvent);
+        this.containerElm.addEventListener('mouseleave', () => this.onMouseLeaveEvent());
     }
 
     get container() {
@@ -31,7 +31,7 @@ export default class CalendarMasterContainer {
     }
 
     private onMouseLeaveEvent() {
-        if (this.engine.isRangeDefined())
+        if (!this.engine.isRangeDefined())
             this.mediator.notify(this, 'dates', 'resetSubselections');
     }
 
@@ -48,6 +48,9 @@ export default class CalendarMasterContainer {
     public open() {
         this.containerElm.setAttribute('open', '');
         this.containerElm.removeAttribute('close');
+
+        this.mediator.notify(this, 'dates', 'open');
+        this.mediator.notify(this, 'days', 'open');
     }
 
     public close() {

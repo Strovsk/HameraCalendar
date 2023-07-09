@@ -15,8 +15,6 @@ export default class CalendarDates {
         this.mediator = mediator;
 
         this.containerElm.classList.add('CalendarDates');
-
-        this.open();
     }
 
     public open() {
@@ -52,7 +50,7 @@ export default class CalendarDates {
     public updateDates() { // Old insertDatesInScreen
         this.containerElm.innerHTML = '';
         this.engine.getArrayDate().forEach((dateObj, index) => {
-            const dateElm = new DateNode(index, dateObj);
+            const dateElm = new DateNode(index, dateObj, this.engine, this.mediator);
 
             this.dateNodeClickEvent?.forEach(func => {
                 dateElm.container.addEventListener('click', func);
@@ -69,5 +67,24 @@ export default class CalendarDates {
 
     public get container() {
         return this.containerElm;
+    }
+
+    public selectRange(limitDate: DateMinimalObj) {
+        this.dateNodes.forEach((dateObj) => {
+            const toCompare: DateMinimalObj = {
+                date: dateObj.date,
+                year: dateObj.year,
+                month: dateObj.month,
+            };
+            const comparisonLimit: DateMinimalObj = {
+                date: limitDate.date,
+                year: limitDate.year,
+                month: limitDate.month,
+            };
+
+            const mustBeSubselected = this.engine
+                .isDateSubSelectingRangeMode(toCompare, comparisonLimit);
+            dateObj.enableSubSelectedStyle = mustBeSubselected;
+        });
     }
 }
