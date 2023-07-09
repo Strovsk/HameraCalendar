@@ -6,3 +6,9 @@ declare type MonthDate = number;
 declare type Weekday = string;
 declare type MonthName = string;
 declare type Month = number;
+
+declare type DateMinimalObj = {
+    date: MonthDate;
+    month: Month;
+    year: Year;
+};
