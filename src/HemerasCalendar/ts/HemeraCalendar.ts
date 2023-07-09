@@ -16,6 +16,7 @@ export class HemeraCalendar implements IMediator {
 
     constructor(options: AppOptions = Config.appOptions) {
         this.engine = new HemeraCalendarEngine(options);
+
         this.options = options;
 
         this.calendarDays = new Components.CalendarDays(this.engine, this);
@@ -34,7 +35,12 @@ export class HemeraCalendar implements IMediator {
         if (this.options.init) this.init();
     }
 
-    public notify<T>(sender: T, component: keyof Components, classmethod: string): void {
+    public notify<T, K>(
+        sender: T,
+        component: keyof Components,
+        classmethod: string,
+        payload: K | undefined = undefined,
+    ): void {
         const components: Components = {
             'days': this.calendarDays,
             'dates': this.calendarDates,
@@ -43,7 +49,7 @@ export class HemeraCalendar implements IMediator {
             'actionBar': this.calendarActionBar,
             'masterContainer': this.calendarMasterContainer,
         };
-        components[component][classmethod]();
+        components[component][classmethod](payload);
     }
 
     public toggle() {
