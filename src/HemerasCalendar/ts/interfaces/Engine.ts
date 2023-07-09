@@ -15,7 +15,7 @@ export default interface IEngine {
     isSubSelectingRangeMode(): boolean;
     selectDate(year: Year, month: Month, date: MonthDate): boolean;
     toggleDateSelection(year: Year, month: Month, date: MonthDate): boolean;
-    isDateSubSelectingRangeMode(toCompareDate: AppSelectedDateObject, limitDate: AppSelectedDateObject): boolean;
+    isDateSubSelectingRangeMode(toCompareDate: DateMinimalObj, limitDate: DateMinimalObj): boolean;
 
     addYear(numberOfYears: number): void;
     addMonth(numberOfMonths: number): void;

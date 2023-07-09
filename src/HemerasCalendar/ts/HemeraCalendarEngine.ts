@@ -261,7 +261,7 @@ export class HemeraCalendarEngine implements IEngine {
         return this.options.selectionType === DateSelectionOption.range && this.selections.length === 1;
     }
 
-    public isDateSubSelectingRangeMode(toCompareDate: AppSelectedDateObject, limitDate: AppSelectedDateObject): boolean {
+    public isDateSubSelectingRangeMode(toCompareDate: DateMinimalObj, limitDate: DateMinimalObj): boolean {
         if (!this.isSubSelectingRangeMode()) return false;
 
         const selectedDate = new Date(this.selections[0].year, this.selections[0].month, this.selections[0].date);
@@ -269,7 +269,7 @@ export class HemeraCalendarEngine implements IEngine {
         const limitDateObj = new Date(limitDate.year, limitDate.month, limitDate.date);
 
         const sortedPeriod = [limitDateObj, selectedDate].sort(
-            (dateA, dateB) => dateA.getTime() - dateB.getDate(),
+            (dateA, dateB) => (dateA as any) - (dateB as any),
         );
 
         return toCompareDateObj > sortedPeriod[0] && toCompareDateObj < sortedPeriod[1];
