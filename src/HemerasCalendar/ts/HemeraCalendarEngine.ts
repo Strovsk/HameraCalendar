@@ -1,4 +1,3 @@
-import { objectExtends } from '@/utils/objectExtends';
 import { shortWeekDaysOptions, monthsOptions } from '@/helpers/languages';
 import { Config } from '@/config';
 import { Month, DateSelectionOption } from '@/types/enum';
@@ -16,7 +15,7 @@ export class HemeraCalendarEngine implements IEngine {
     public monthsOptions = monthsOptions;
 
     constructor(options: AppOptions) {
-        this.options = objectExtends(this.options, options) as AppOptions;
+        this.options = { ...this.options, ...options } as AppOptions;
     }
 
     get appOptions(): AppOptions {
@@ -276,6 +275,8 @@ export class HemeraCalendarEngine implements IEngine {
     }
 
     public mustClose(): boolean {
+        console.log('after select: ', this.options.closeAfterSelect);
+        
         return (
             (this.options.selectionType === DateSelectionOption.one && this.selections.length === 1) ||
             (this.options.selectionType === DateSelectionOption.range && this.selections.length === 2)
