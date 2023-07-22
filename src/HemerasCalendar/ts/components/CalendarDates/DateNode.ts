@@ -62,8 +62,11 @@ export default class DateNode {
     }
 
     private onClickEvent() {
-        this.enableSelectedStyle = this.engine.canSelectDate();
-        this.engine.selectDate(this.year, this.month, this.date);
+        this.enableSelectedStyle = this.engine.toggleDateSelection(
+            this.year, this.month, this.date,
+        );
+        if (this.engine.mustClose())
+            this.mediator.notify(this, 'masterContainer', 'close');
     }
 
     private onMouseHoverEvent(event: MouseEvent) {
