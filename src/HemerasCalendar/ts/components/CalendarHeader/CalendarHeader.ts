@@ -7,23 +7,29 @@ export default class CalendarHeader {
     private mediator: IMediator;
 
     private containerElm: HTMLElement = document.createElement('div');
+    public controllerElm: CalendarController;
     public labelElm: CalendarLabel = new CalendarLabel();
-    public controllerElm: CalendarController = new CalendarController();
 
     constructor(engine: IEngine, mediator: IMediator) {
         this.engine = engine;
         this.mediator = mediator;
 
+        this.controllerElm = new CalendarController(engine, mediator);
+
         this.containerElm.classList.add('CalendarYearMonthController');
         this.containerElm.appendChild(this.labelElm.container);
         this.containerElm.appendChild(this.controllerElm.container);
 
-        const currentMonthName = this.engine.getCurrentMonthName().expanded;
-        const currentYear = this.engine.getCurrentYear();
-        this.labelElm.text = `${currentMonthName} ${currentYear}`;
+        this.updateLabel();
     }
     
     public get container() {
         return this.containerElm;
+    }
+
+    public updateLabel() {
+        const currentMonthName = this.engine.getCurrentMonthName().expanded;
+        const currentYear = this.engine.getCurrentYear();
+        this.labelElm.text = `${currentMonthName} ${currentYear}`;
     }
 }

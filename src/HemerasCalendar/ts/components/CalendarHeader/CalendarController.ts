@@ -1,13 +1,17 @@
+import { IEngine, IMediator } from "@/interfaces";
+
 export default class CalendarController {
     public containerElm: HTMLElement = document.createElement('div');
     public prevYearMonthElm: HTMLElement = document.createElement('button');
     public nextYearMonthElm: HTMLElement = document.createElement('button');
 
-    constructor() {
-        this.loadHTMLStructure();
-    }
+    protected engine: IEngine;
+    private mediator: IMediator;
 
-    loadHTMLStructure() {
+    constructor(engine: IEngine, mediator: IMediator) {
+        this.engine = engine;
+        this.mediator = mediator;
+        
         this.containerElm.appendChild(this.prevYearMonthElm);
         this.containerElm.appendChild(this.nextYearMonthElm);
 
@@ -23,6 +27,21 @@ export default class CalendarController {
         this.containerElm.classList.add(
             'CalendarYearMonthController-buttonConatiner',
         );
+
+        this.nextYearMonthElm.addEventListener('click', () => this.onRightClickEvent());
+        this.prevYearMonthElm.addEventListener('click', () => this.onLeftClickEvent());
+    }
+
+    private onRightClickEvent() {
+        this.engine.addMonth(1);
+        this.mediator.notify(this, 'dates', 'updateDates');
+        this.mediator.notify(this, 'header', 'updateLabel');
+    }
+    
+    private onLeftClickEvent() {
+        this.engine.removeMonth(1);
+        this.mediator.notify(this, 'dates', 'updateDates');
+        this.mediator.notify(this, 'header', 'updateLabel');
     }
 
     public get container() {
