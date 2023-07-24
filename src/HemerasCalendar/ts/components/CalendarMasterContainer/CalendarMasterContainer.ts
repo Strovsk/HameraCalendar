@@ -58,6 +58,7 @@ export default class CalendarMasterContainer {
         this.containerElm.removeAttribute('open');
         this.containerElm.addEventListener('animationend', () => {
             this.containerElm.removeAttribute('close');
+            this.mediator.notify(this, 'months', 'close');
             console.log('animação acabou');
         }, { once: true});
         this.mediator.notify(this, 'dates', 'updateDates');

@@ -33,13 +33,15 @@ export default class CalendarController {
     }
 
     private onRightClickEvent() {
-        this.engine.addMonth(1);
+        if (this.mediator.states.isDatesView) this.engine.addMonth(1);
+        else this.engine.addYear(1);
         this.mediator.notify(this, 'dates', 'updateDates');
         this.mediator.notify(this, 'header', 'updateLabel');
     }
     
     private onLeftClickEvent() {
-        this.engine.removeMonth(1);
+        if (this.mediator.states.isDatesView) this.engine.removeMonth(1);
+        else this.engine.removeYear(1);
         this.mediator.notify(this, 'dates', 'updateDates');
         this.mediator.notify(this, 'header', 'updateLabel');
     }
