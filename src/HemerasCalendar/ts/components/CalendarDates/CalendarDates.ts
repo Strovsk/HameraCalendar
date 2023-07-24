@@ -20,6 +20,8 @@ export default class CalendarDates {
     public open() {
         this.containerElm.removeAttribute('close');
         this.containerElm.setAttribute('open', '');
+        this.mediator.states.isDatesView = true;
+        this.mediator.notify(this, 'header', 'updateLabel');
     }
 
     public isOpen() {
@@ -29,6 +31,19 @@ export default class CalendarDates {
     public close() {
         this.containerElm.removeAttribute('open');
         this.containerElm.setAttribute('close', '');
+
+        this.containerElm.addEventListener('animationend', (event: AnimationEvent) => {
+            const element = event.target as HTMLElement;
+            element.removeAttribute('close');
+            this.mediator.states.isDatesView = false;
+            this.mediator.notify(this, 'header', 'updateLabel');
+            this.mediator.notify(this, 'months', 'open');
+        }, { once:true });
+    }
+
+    public toggle() {
+        if (this.isOpen()) this.close();
+        else this.open();
     }
 
     public resetSubselections() { // Old resetRange

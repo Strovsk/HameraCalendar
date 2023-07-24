@@ -14,6 +14,10 @@ export class HemeraCalendar implements IMediator {
     private calendarActionBar: Components.CalendarActionBar;
     private calendarMasterContainer: Components.CalendarMasterContainer;
 
+    public states = {
+        isDatesView: true,
+    };
+
     constructor(options: AppOptions = Config.appOptions) {
         this.engine = new HemeraCalendarEngine(options);
 

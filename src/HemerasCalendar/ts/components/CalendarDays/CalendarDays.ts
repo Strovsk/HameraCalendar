@@ -30,13 +30,29 @@ export default class CalendarDays {
         });
     }
 
-    public open() {
-        this.containerElm.setAttribute('open', '');
-        this.containerElm.removeAttribute('close');
+    public isOpen() {
+        return this.containerElm.hasAttribute('open');
     }
 
-    public close() {
-        this.containerElm.setAttribute('close', '');
+    public open(onOpen: CallableFunction | undefined = undefined) {
+        this.containerElm.setAttribute('open', '');
+        this.containerElm.removeAttribute('close');
+        if (onOpen) onOpen();
+    }
+
+    public close(onAnimationEnd: CallableFunction | undefined = undefined) {
         this.containerElm.removeAttribute('open');
+        this.containerElm.setAttribute('close', '');
+
+        this.containerElm.addEventListener('animationend', (event: AnimationEvent) => {
+            const element = event.target as HTMLElement;
+            element.removeAttribute('close');
+            if (onAnimationEnd) onAnimationEnd();
+        }, { once:true });
+    }
+
+    public toggle(payload: CallableFunction) {
+        if (this.isOpen()) this.close(payload);
+        else this.open(payload);
     }
 }

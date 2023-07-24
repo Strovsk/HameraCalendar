@@ -22,9 +22,14 @@ export class HemeraCalendarEngine implements IEngine {
         return this.options;
     }
 
-    set month(month: Month) {
-        if (month <= 0 && month >= 11) throw new Error('month must be a number between 0 and 11');
-        this.currentMonthYear.month = month;
+    set month(monthIndex: Month) {
+        if (monthIndex <= 0 && monthIndex >= 11) throw new Error('month must be a number between 0 and 11');
+        this.currentMonthYear.month = monthIndex;
+    }
+
+    public getMonths<T extends keyof typeof monthsOptions>(): typeof monthsOptions[T] {
+        const language = this.options.language as keyof typeof monthsOptions
+        return this.monthsOptions[language];
     }
 
     public addMonth(numberOfMonths = 1) {
