@@ -165,6 +165,12 @@ export class HemeraCalendarEngine implements IEngine {
         );
     }
 
+    public hasSelectionsInCurrentMonth(): boolean {
+        return this.selections.some(
+            (selectedDate) => selectedDate.month === this.currentMonthYear.month,
+        );
+    }
+
     public isSubSelectedDate(year: Year, month: Month, date: MonthDate) {
         if (!this.isRangeDefined()) return false;
 
