@@ -1,4 +1,5 @@
 import { shortWeekDaysOptions, monthsOptions } from '@/helpers/languages';
+import generateArrayDates from '@/utils/generateArrayDates';
 import { Config } from '@/config';
 import { Month, DateSelectionOption } from '@/types/enum';
 import { IEngine } from '@/interfaces';
@@ -100,69 +101,15 @@ export class HemeraCalendarEngine implements IEngine {
         this.selections = [];
     }
 
-    private isToday(year: Year, month: Month, date: MonthDate): boolean {
-        return this.today.getFullYear() === year && this.today.getMonth() === month && this.today.getDate() === date;
-    }
-
     public getArrayDate(): DateInfo[] {
-        // TODO refactor this function Urgent!!
         const monthInfo = this.getMonthInfo(this.currentMonthYear.month, this.currentMonthYear.year);
+        const arrayDates = generateArrayDates(monthInfo);
 
-        const arrayDates: DateInfo[] = [];
-        const daysInWeek = 7;
-        const thursdayIndex = 5;
-        let numberOfWeekRows = 5;
-        if (monthInfo.startWeekDay >= thursdayIndex) numberOfWeekRows += 1
-
-        const numberOfNodesInArray = daysInWeek * numberOfWeekRows;
-        
-        let nextMonthDate = 0;
-        for (let i = 1; i <= numberOfNodesInArray; i+= 1) {
-            if (i <= monthInfo.startWeekDay) {
-                const lastMonthDate = monthInfo.lastMonthNumberOfDays - monthInfo.startWeekDay + i
-                arrayDates.push({
-                    year: monthInfo.lastMonthYear,
-                    month: monthInfo.lastMonthNumber,
-                    date: lastMonthDate,
-                    isToday: false,
-                    isAnotherMonth: true,
-                    isLastMonth: true,
-                    isNextMonth: false,
-                    isSubSelected: this.isSubSelectedDate(monthInfo.lastMonthYear, monthInfo.lastMonthNumber, lastMonthDate),
-                    isSelected: this.isDateInSelection(monthInfo.lastMonthYear, monthInfo.lastMonthNumber, lastMonthDate),
-                } as DateInfo);
-            } else if (i > monthInfo.startWeekDay + monthInfo.numberOfDays) {
-                nextMonthDate +=1
-                arrayDates.push({
-                    year: monthInfo.nextMonthYear,
-                    month: monthInfo.nextMonthNumber,
-                    date: nextMonthDate,
-                    isToday: false,
-                    isAnotherMonth: true,
-                    isLastMonth: false,
-                    isNextMonth: true,
-                    isSelected: this.isDateInSelection(monthInfo.nextMonthYear, monthInfo.nextMonthNumber, nextMonthDate),
-                    isSubSelected: this.isSubSelectedDate(monthInfo.nextMonthYear, monthInfo.nextMonthNumber, nextMonthDate),
-                } as DateInfo);
-            } else {
-                const currentDate = i - monthInfo.startWeekDay as MonthDays;
-                const dateInfo: DateInfo = {
-                    year: monthInfo.year,
-                    month: monthInfo.monthNumber,
-                    date: currentDate,
-                    isToday: this.isToday(monthInfo.year, monthInfo.monthNumber, currentDate) && this.options.markCurrentDay,
-                    isAnotherMonth: false,
-                    isLastMonth: false,
-                    isNextMonth: false,
-                    isSelected: this.isDateInSelection(monthInfo.year, monthInfo.monthNumber, currentDate),
-                    isSubSelected: this.isSubSelectedDate(monthInfo.year, monthInfo.monthNumber, currentDate),
-                };
-                arrayDates.push(dateInfo);
-            }
-        }
-
-        console.log('Array final', arrayDates);
-        return arrayDates;
+        return arrayDates.map((dateElm: DateInfo) => {
+            dateElm.isSubSelected = this.isSubSelectedDate(dateElm.year, dateElm.month, dateElm.date);
+            dateElm.isSelected = this.isDateInSelection(dateElm.year, dateElm.month, dateElm.date);
+            return dateElm;
+        });
     }
 
     public selectDate(year: Year, month: Month, date: MonthDate): boolean {
