@@ -9,6 +9,6 @@ declare type Month = number;
 
 declare type DateMinimalObj = {
     date: MonthDate;
-    month: Month;
+    month: Month | MonthName;
     year: Year;
 };

@@ -222,8 +222,8 @@ export class HemeraCalendarEngine implements IEngine {
         if (!this.isSubSelectingRangeMode()) return false;
 
         const selectedDate = new Date(this.selections[0].year, this.selections[0].month, this.selections[0].date);
-        const toCompareDateObj = new Date(toCompareDate.year, toCompareDate.month, toCompareDate.date);
-        const limitDateObj = new Date(limitDate.year, limitDate.month, limitDate.date);
+        const toCompareDateObj = new Date(toCompareDate.year, toCompareDate.month as Month, toCompareDate.date);
+        const limitDateObj = new Date(limitDate.year, limitDate.month as Month, limitDate.date);
 
         const sortedPeriod = [limitDateObj, selectedDate].sort(
             (dateA, dateB) => (dateA as any) - (dateB as any),
