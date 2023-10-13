@@ -1,8 +1,11 @@
 import { monthsOptions } from "@/helpers/languages";
 
 export default interface IEngine {
+    selections: AppSelectedDateObject[];
+
     get appOptions(): AppOptions;
     set month(monthIndex: Month);
+    set year(year: Year);
 
     getWeekDays(): string[];
     getMonths<T extends keyof typeof monthsOptions>(): typeof monthsOptions[T];

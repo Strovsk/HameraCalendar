@@ -4,6 +4,7 @@ import { CalendarActionBar } from "./CalendarActionBar";
 import { CalendarDays } from "./CalendarDays";
 import { CalendarMasterContainer } from "./CalendarMasterContainer";
 import { CalendarMonths } from "./CalendarMonths";
+import { CalendarSelectionPin } from './CalendarSelectionPin';
 
 export {
     CalendarHeader,
@@ -12,4 +13,5 @@ export {
     CalendarDays,
     CalendarMasterContainer,
     CalendarMonths,
+    CalendarSelectionPin,
 };

@@ -277,6 +277,54 @@
     border-radius: 5px;
 }
 
+.CalendarSelectionPinContainer {
+    display: none;
+}
+
+.CalendarSelectionPinContainer[open] {
+    position: absolute;
+    background-color: rgba(122, 81, 151, 1);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    right: -8%;
+    top: -7%;
+    animation: showCalendarPin .2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 1);
+    transition: ease .1s all;
+    transform: scale(0.7);
+}
+
+.CalendarSelectionPinContainer[close] {
+    display: flex;
+    animation: hideCalendarPin 0.2s ease;
+}
+
+.CalendarSelectionPinDay {
+    color: white;
+    font-weight: 900;
+    font-size: 15px;
+    user-select: none;
+}
+
+.CalendarSelectionPinMonth {
+    color: white;
+    font-weight: 400;
+    font-size: 10px;
+    user-select: none;
+}
+
+.CalendarSelectionPinYear {
+    color: white;
+    font-weight: 400;
+    font-size: 10px;
+    user-select: none;
+}
+
 @keyframes showCalendar {
     from {
         transform: scale(.8);
@@ -299,6 +347,28 @@
     }
 }
 
+@keyframes showCalendarPin {
+    from {
+        transform: scale(0.3);
+        opacity: 0;
+    }
+    to {
+        transform: scale(0.7);
+        opacity: 1;
+    }
+}
+
+@keyframes hideCalendarPin {
+    from {
+        transform: scale(0.7);
+        opacity: 1;
+    }
+    to {
+        transform: scale(0.3);
+        opacity: 0;
+    }
+}
+
 @media (max-width: 600px) {
     .Calendar {
         width: 80vw;
@@ -315,6 +385,11 @@
         background: red;
         /* opacity: 0; */
     }
+
+    .CalendarSelectionPinContainer[open] {
+        right: 83%;
+        top: 0%;
+    }
 }
 
 @media (max-width: 300px) {
@@ -325,6 +400,11 @@
         left: 0 !important;
         top: 0 !important;
         position: fixed;
+    }
+
+    .CalendarSelectionPinContainer[open] {
+        right: 83%;
+        top: 0%;
     }
 }
 
@@ -344,5 +424,10 @@
     }
     .CalendarActionContainer button:hover {
         background-color: var(--hover-color);
+    }
+
+    .CalendarSelectionPinContainer[open]:hover {
+        background-color: rgb(100, 65, 124);
+        transform: scale(1);
     }
 }
