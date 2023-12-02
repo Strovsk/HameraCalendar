@@ -1,7 +1,7 @@
-import * as AppOptions from "./app.config";
+import * as AppOptions from './app.config';
 
 class Config {
-    public static appOptions = AppOptions.default;
+  public static appOptions = AppOptions.default;
 }
 
 export default Config;

@@ -1,12 +1,11 @@
 export default class MonthNode {
-    public containerElm: HTMLElement = document.createElement('div');
+  public containerElm: HTMLElement = document.createElement('div');
 
-    constructor(monthText: string) {
-        this.containerElm.innerText = monthText;
-    }
+  constructor(monthText: string) {
+    this.containerElm.innerText = monthText;
+  }
 
-    public get container() : HTMLElement {
-        return this.containerElm;
-    }
-    
+  public get container(): HTMLElement {
+    return this.containerElm;
+  }
 }

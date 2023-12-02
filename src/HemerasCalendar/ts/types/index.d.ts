@@ -1,9 +1,9 @@
-import { HemeraCalendar } from "HemeraCalendar";
-import { HemeraCalendarEngine } from "HemeraCalendarEngine";
+import { HemeraCalendar } from 'HemeraCalendar';
+import { HemeraCalendarEngine } from 'HemeraCalendarEngine';
 
 declare global {
-    interface Window {
-        HemeraCalendarEngine: typeof HemeraCalendarEngine;
-        HemeraCalendar: typeof HemeraCalendar;
-    }
+  interface Window {
+    HemeraCalendarEngine: typeof HemeraCalendarEngine;
+    HemeraCalendar: typeof HemeraCalendar;
+  }
 }

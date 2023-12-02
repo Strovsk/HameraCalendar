@@ -1,3 +1,3 @@
-import CalendarActionBar from "./CalendarActionBar";
+import CalendarActionBar from './CalendarActionBar';
 
 export { CalendarActionBar };

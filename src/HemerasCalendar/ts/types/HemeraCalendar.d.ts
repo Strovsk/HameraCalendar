@@ -1,25 +1,25 @@
 declare type pixel = number;
 
 declare type CalendarPositionPresetX = {
-    start: number;
-    end: number;
-    center: number;
+  start: number;
+  end: number;
+  center: number;
 };
 
 declare type Components = {
-    'days': CalendarDays,
-    'dates': CalendarDates,
-    'header': CalendarHeader,
-    'months': CalendarMonths,
-    'actionBar': CalendarActionBar,
-    'masterContainer': CalendarMasterContainer,
-    'datePin': CalendarSelectionPin,
-}
+  days: CalendarDays;
+  dates: CalendarDates;
+  header: CalendarHeader;
+  months: CalendarMonths;
+  actionBar: CalendarActionBar;
+  masterContainer: CalendarMasterContainer;
+  datePin: CalendarSelectionPin;
+};
 
-declare type MonthContollerOptions = { add: () => void; remove: () => void};
+declare type MonthContollerOptions = { add: () => void; remove: () => void };
 
-declare type YearContollerOptions = { add: () => void; remove: () => void};
+declare type YearContollerOptions = { add: () => void; remove: () => void };
 
 declare type HTMLEvent = {
-    target: HTMLElement;
-}
+  target: HTMLElement;
+};

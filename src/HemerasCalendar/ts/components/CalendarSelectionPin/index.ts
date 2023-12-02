@@ -1,3 +1,3 @@
-import CalendarSelectionPin from "./CalendarSelectionPin";
+import CalendarSelectionPin from './CalendarSelectionPin';
 
 export { CalendarSelectionPin };

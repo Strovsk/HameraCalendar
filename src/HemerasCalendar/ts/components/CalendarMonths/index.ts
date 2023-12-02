@@ -1,3 +1,3 @@
-import CalendarMonths from "./CalendarMonths";
+import CalendarMonths from './CalendarMonths';
 
 export { CalendarMonths };

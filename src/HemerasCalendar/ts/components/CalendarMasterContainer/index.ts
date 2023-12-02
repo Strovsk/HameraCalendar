@@ -1,3 +1,3 @@
-import CalendarMasterContainer from "./CalendarMasterContainer";
+import CalendarMasterContainer from './CalendarMasterContainer';
 
 export { CalendarMasterContainer };

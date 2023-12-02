@@ -8,7 +8,7 @@ declare type MonthName = string;
 declare type Month = number;
 
 declare type DateMinimalObj = {
-    date: MonthDate;
-    month: Month | MonthName;
-    year: Year;
+  date: MonthDate;
+  month: Month | MonthName;
+  year: Year;
 };
