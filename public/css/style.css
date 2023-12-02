@@ -1,0 +1,433 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400;1,500;1,700&display=swap");
+
+.Calendar {
+    --hover-color: rgba(40, 40, 40, 0.1);
+    width: 350px;
+    height: 380px;
+    background-color: #fff;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+    font-family: Roboto;
+    display: grid;
+    grid-template-rows: 0.3fr 0.1fr 1fr;
+    position: absolute;
+    display: none;
+}
+
+.Calendar[open] {
+    animation: showCalendar .2s ease;
+    display: grid;
+    transform: scale(1);
+    opacity: 1;
+}
+
+.Calendar[close] {
+    animation: hideCalendar .2s ease;
+    display: grid;
+    transform: scale(1);
+    opacity: 1;
+}
+
+.CalendarDays {
+    width: 100%;
+    display: none;
+    flex-flow: nowrap row;
+    justify-content: space-around;
+    /*   border: 2px dotted blue; */
+    width: 90%;
+    margin: auto;
+}
+
+.CalendarDays h3 {
+    font-size: 1em;
+    margin: 0;
+    font-weight: 400;
+    color: #666;
+    cursor: default;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.CalendarDates {
+    width: 90%;
+    height: 85%;
+    margin: auto;
+    display: grid;
+    /* gap: 1em; */
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    align-items: center;
+    justify-items: center;
+    display: none;
+    grid-row: span 2;
+}
+
+.CalendarDays[open] {
+    width: 90%;
+    display: flex;
+    flex-flow: nowrap row;
+    justify-content: space-around;
+    animation: showCalendar .2s ease;
+}
+
+.CalendarDates[open] {
+    display: grid;
+    animation: showCalendar .2s ease;
+}
+
+.CalendarDates[close] {
+    display: grid;
+    animation: hideCalendar 0.2s ease;
+}
+
+.CalendarDays[close] {
+    display: flex;
+    animation: hideCalendar 0.2s ease;
+}
+
+.calendarDate {
+    text-align: center;
+    cursor: pointer;
+    border-radius: 50%;
+    flex-shrink: 0;
+    flex-grow: 1;
+    display: grid;
+    place-items: center;
+    font-size: 1em;
+    width: 36px;
+    height: 36px;
+    transition: .1s linear all;
+    user-select: none;
+}
+
+.calendarDate.--today {
+    border: 1px solid rgba(40, 40, 40, .7);
+}
+
+.calendarDate.--anotherMonth {
+    color: rgba(50, 50, 50, .2);
+}
+
+.calendarDate.--selected {
+    border-radius: none;
+    background: #7A5197;
+    color: white;
+}
+
+.calendarDate.--sub-selected {
+    background: rgba(122, 81, 151, .4);
+    color: white;
+}
+
+.CalendarMonthYear {
+    font-size: 1.3em;
+    font-weight: 600;
+    border: none;
+    padding: 10px;
+    /*   border: 2px dotted green; */
+    background-color: transparent;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.CalendarYearMonthController {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+    margin: auto;
+}
+
+.CalendarYearMonthController-buttonContainer {
+    width: 25%;
+    display: flex;
+    justify-content: space-around;
+}
+
+.CalendarYearMonthController-button {
+    --button-bar-width: 2px;
+    --button-bar-height: 30%;
+    --button-bar-left: 35%;
+    --button-bar-top: 37%;
+
+    border-radius: 50%;
+    border: none;
+    position: relative;
+    width: 2.3em;
+    height: 2.3em;
+    transition: background-color 0.1s ease;
+    margin: 0 4px;
+    cursor: pointer;
+    background-color: transparent;
+    /*   background: cyan; */
+}
+
+.CalendarYearMonthController-button.--next::after {
+    content: "";
+    width: var(--button-bar-height);
+    height: var(--button-bar-width);
+    border-radius: 4px;
+    background-color: #1b1b1b;
+    position: absolute;
+    left: var(--button-bar-left);
+    bottom: var(--button-bar-top);
+    transform: rotate(-45deg);
+}
+
+.CalendarYearMonthController-button.--next::before {
+    content: "";
+    width: var(--button-bar-height);
+    height: var(--button-bar-width);
+    border-radius: 4px;
+    background-color: #1b1b1b;
+    position: absolute;
+    left: var(--button-bar-left);
+    top: var(--button-bar-top);
+    transform: rotate(45deg);
+}
+
+.CalendarYearMonthController-button.--previous::after {
+    content: "";
+    width: var(--button-bar-height);
+    height: var(--button-bar-width);
+    border-radius: 4px;
+    background-color: #1b1b1b;
+    position: absolute;
+    right: var(--button-bar-left);
+    bottom: var(--button-bar-top);
+    transform: rotate(45deg);
+}
+
+.CalendarYearMonthController-button.--previous::before {
+    content: "";
+    width: var(--button-bar-height);
+    height: var(--button-bar-width);
+    border-radius: 4px;
+    background-color: #1b1b1b;
+    position: absolute;
+    right: var(--button-bar-left);
+    top: var(--button-bar-top);
+    transform: rotate(-45deg);
+}
+
+.CalendarMonthSelection {
+    display: none;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    place-items: center;
+    width: 90%;
+    height: auto;
+    margin: auto;
+    grid-row: span 2;
+}
+
+.CalendarMonthSelection div {
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    transition: .2s ease background;
+    display: grid;
+    place-items: center;
+    font-weight: 400;
+    cursor: default;
+    font-size: 1.3em;
+}
+
+.CalendarMonthSelection[open] {
+    display: grid;
+    animation: showCalendar 0.2s ease;
+}
+
+.CalendarMonthSelection[close] {
+    display: grid;
+    animation: hideCalendar 0.2s ease;
+}
+
+.CalendarActionContainer {
+    width: 90%;
+    margin: auto;
+    margin-block: 15px;
+    display: flex;
+    justify-content: flex-end;
+    column-gap: 15px;
+    display: none;
+}
+
+.CalendarActionContainer[open] {
+    width: 90%;
+    display: flex;
+    flex-flow: nowrap row;
+    justify-content: flex-end;
+    animation: showCalendar .2s ease;
+}
+
+.CalendarActionContainer[close] {
+    display: grid;
+    animation: hideCalendar 0.2s ease;
+}
+
+.CalendarActionContainer button {
+    color:rgba(122, 81, 151, 1);
+    font-weight: 900;
+    font-size: 15px;
+    border: none;
+    background-color: transparent;
+    padding: 7px 10px;
+    cursor: pointer;
+    transition: .1s linear all;
+    border-radius: 5px;
+}
+
+.CalendarSelectionPinContainer {
+    display: none;
+}
+
+.CalendarSelectionPinContainer[open] {
+    position: absolute;
+    background-color: rgba(122, 81, 151, 1);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    right: -8%;
+    top: -7%;
+    animation: showCalendarPin .2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 1);
+    transition: ease .1s all;
+    transform: scale(0.7);
+}
+
+.CalendarSelectionPinContainer[close] {
+    display: flex;
+    animation: hideCalendarPin 0.2s ease;
+}
+
+.CalendarSelectionPinDay {
+    color: white;
+    font-weight: 900;
+    font-size: 15px;
+    user-select: none;
+}
+
+.CalendarSelectionPinMonth {
+    color: white;
+    font-weight: 400;
+    font-size: 10px;
+    user-select: none;
+}
+
+.CalendarSelectionPinYear {
+    color: white;
+    font-weight: 400;
+    font-size: 10px;
+    user-select: none;
+}
+
+@keyframes showCalendar {
+    from {
+        transform: scale(.8);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes hideCalendar {
+    from {
+        transform: scale(1);
+        opacity: 1;
+    }
+    to {
+        transform: scale(.8);
+        opacity: 0;
+    }
+}
+
+@keyframes showCalendarPin {
+    from {
+        transform: scale(0.3);
+        opacity: 0;
+    }
+    to {
+        transform: scale(0.7);
+        opacity: 1;
+    }
+}
+
+@keyframes hideCalendarPin {
+    from {
+        transform: scale(0.7);
+        opacity: 1;
+    }
+    to {
+        transform: scale(0.3);
+        opacity: 0;
+    }
+}
+
+@media (max-width: 600px) {
+    .Calendar {
+        width: 80vw;
+        min-width: 300px;
+        height: 70vh;
+        margin: auto;
+        left: 0;
+        top: 0;
+        position: fixed;
+    }
+
+    .Calendar::backdrop {
+        /* background: rgb(0, 0, 0, 0.5); */
+        background: red;
+        /* opacity: 0; */
+    }
+
+    .CalendarSelectionPinContainer[open] {
+        right: 83%;
+        top: 0%;
+    }
+}
+
+@media (max-width: 300px) {
+    .Calendar {
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+        left: 0 !important;
+        top: 0 !important;
+        position: fixed;
+    }
+
+    .CalendarSelectionPinContainer[open] {
+        right: 83%;
+        top: 0%;
+    }
+}
+
+@media (hover) {
+    .calendarDate:hover {
+        background-color: var(--hover-color);
+    }
+    .CalendarYearMonthController-button:hover {
+        background-color: var(--hover-color);
+    }
+    .CalendarMonthYear:hover {
+        background-color: var(--hover-color);
+    }
+    .CalendarMonthSelection div:hover {
+        background-color: var(--hover-color);
+        font-weight: 500;
+    }
+    .CalendarActionContainer button:hover {
+        background-color: var(--hover-color);
+    }
+
+    .CalendarSelectionPinContainer[open]:hover {
+        background-color: rgb(100, 65, 124);
+        transform: scale(1);
+    }
+}
