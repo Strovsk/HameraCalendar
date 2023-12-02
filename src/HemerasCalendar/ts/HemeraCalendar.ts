@@ -13,7 +13,6 @@ export class HemeraCalendar implements IMediator {
   private calendarMonths: Components.CalendarMonths;
   private calendarActionBar: Components.CalendarActionBar;
   private calendarMasterContainer: Components.CalendarMasterContainer;
-  private calendarSelectionPin: Components.CalendarSelectionPin;
 
   public states = {
     isDatesView: true,
@@ -29,10 +28,6 @@ export class HemeraCalendar implements IMediator {
     this.calendarMonths = new Components.CalendarMonths(this.engine, this);
     this.calendarHeader = new Components.CalendarHeader(this.engine, this);
     this.calendarActionBar = new Components.CalendarActionBar(
-      this.engine,
-      this
-    );
-    this.calendarSelectionPin = new Components.CalendarSelectionPin(
       this.engine,
       this
     );
@@ -56,9 +51,6 @@ export class HemeraCalendar implements IMediator {
     this.calendarMasterContainer.container.appendChild(
       this.calendarActionBar.container
     );
-    this.calendarMasterContainer.container.appendChild(
-      this.calendarSelectionPin.container
-    );
 
     if (this.options.init) this.init();
   }
@@ -76,7 +68,6 @@ export class HemeraCalendar implements IMediator {
       months: this.calendarMonths,
       actionBar: this.calendarActionBar,
       masterContainer: this.calendarMasterContainer,
-      datePin: this.calendarSelectionPin,
     };
     components[component][classmethod](payload);
   }

@@ -40,13 +40,6 @@ export default class CalendarController {
     if (this.mediator.states.isDatesView) this.engine.addMonth(1);
     else this.engine.addYear(1);
 
-    if (
-      !this.engine.hasSelectionsInCurrentMonth() &&
-      this.engine.selections.length > 0
-    )
-      this.mediator.notify(this, 'datePin', 'open');
-    else this.mediator.notify(this, 'datePin', 'close');
-
     this.mediator.notify(this, 'dates', 'updateDates');
     this.mediator.notify(this, 'header', 'updateLabel');
   }
@@ -54,13 +47,6 @@ export default class CalendarController {
   private onLeftClickEvent() {
     if (this.mediator.states.isDatesView) this.engine.removeMonth(1);
     else this.engine.removeYear(1);
-
-    if (
-      !this.engine.hasSelectionsInCurrentMonth() &&
-      this.engine.selections.length > 0
-    )
-      this.mediator.notify(this, 'datePin', 'open');
-    else this.mediator.notify(this, 'datePin', 'close');
 
     this.mediator.notify(this, 'dates', 'updateDates');
     this.mediator.notify(this, 'header', 'updateLabel');

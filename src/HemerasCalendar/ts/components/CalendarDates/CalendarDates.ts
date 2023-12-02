@@ -22,10 +22,6 @@ export default class CalendarDates {
     this.containerElm.setAttribute('open', '');
     this.mediator.states.isDatesView = true;
     this.mediator.notify(this, 'header', 'updateLabel');
-
-    if (this.engine.selections.length > 0)
-      this.mediator.notify(this, 'datePin', 'open');
-    else this.mediator.notify(this, 'datePin', 'close');
   }
 
   public isOpen() {

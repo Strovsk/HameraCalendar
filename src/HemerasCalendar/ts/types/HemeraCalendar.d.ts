@@ -13,7 +13,6 @@ declare type Components = {
   months: CalendarMonths;
   actionBar: CalendarActionBar;
   masterContainer: CalendarMasterContainer;
-  datePin: CalendarSelectionPin;
 };
 
 declare type MonthContollerOptions = { add: () => void; remove: () => void };
